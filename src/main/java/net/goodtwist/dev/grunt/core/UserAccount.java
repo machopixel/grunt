@@ -9,6 +9,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import net.goodtwist.dev.grunt.jackson.views.Views;
+
 @Entity
 @Table(name = "user_account")
 @NamedQueries({
@@ -19,12 +23,16 @@ import javax.persistence.Table;
 public class UserAccount {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonView(Views.UserProfile.class)
 	private long id;
 	@Column(name = "username", nullable = false)
+	@JsonView(Views.UserProfile.class)
 	private String username;
 	@Column(name = "password", nullable = false)
+	@JsonView(Views.ServerProfile.class)
 	private String password;
 	@Column(name = "email", nullable = false)
+	@JsonView(Views.UserProfile.class)
 	private String email;
 	
 	public long getId() {

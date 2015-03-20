@@ -1,12 +1,11 @@
 package net.goodtwist.dev.grunt.resources;
 
 import com.codahale.metrics.annotation.Timed;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import io.dropwizard.hibernate.UnitOfWork;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -19,11 +18,12 @@ import java.util.List;
 import net.goodtwist.dev.grunt.core.ServerResponse;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.UserAccountDAO;
+import net.goodtwist.dev.grunt.jackson.views.Views;
 
 @Path("/api/sign-in")
 @Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 public class SignInResource {
-	private static final Logger LOGGER = LoggerFactory.getLogger(SignInResource.class);
 
 	private final UserAccountDAO userAccountDAO;
 
@@ -34,6 +34,7 @@ public class SignInResource {
 	@GET
 	@UnitOfWork
 	@Timed(name = "get-requests")
+	@JsonView(Views.UserProfile.class)
 	public ServerResponse signin(@QueryParam("username") String username, @QueryParam("password") String password) {
 		ServerResponse response = new ServerResponse();
 		boolean success = false;
