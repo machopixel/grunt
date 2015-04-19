@@ -37,7 +37,6 @@ public class UserAccountDAOH2 extends AbstractDAO<UserAccount> implements IUserA
 	public List<UserAccount> findByLikeUsername(String username, int limit) {
 		return list(namedQuery("net.goodtwist.dev.grunt.core.UserAccount.findByLikeUsername")
 				.setParameter("username", username)
-				.setParameter("limit", limit));
+				.setMaxResults(limit));		
 	}
-
 }

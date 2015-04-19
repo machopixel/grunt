@@ -19,7 +19,7 @@ import net.goodtwist.dev.grunt.jackson.views.Views;
 		query = "SELECT u FROM UserAuthentication u WHERE u.token = :token"),
 	@NamedQuery(
 		name = "net.goodtwist.dev.grunt.core.UserAuthentication.findByAccountId",
-		query = "SELECT u FROM UserAuthentication u WHERE u.accountid = :accountid")
+		query = "SELECT u FROM UserAuthentication u WHERE u.accountId = :accountid")
 })
 public class UserAuthentication {
 	@Id

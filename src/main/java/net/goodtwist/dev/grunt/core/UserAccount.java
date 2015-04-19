@@ -21,7 +21,7 @@ import net.goodtwist.dev.grunt.jackson.views.Views;
 		query = "SELECT u FROM UserAccount u WHERE u.username = :username"),
 	@NamedQuery(
 		name = "net.goodtwist.dev.grunt.core.UserAccount.findByLikeUsername",
-		query = "SELECT u FROM UserAccount u WHERE u.username LIKE :username LIMIT :limit")
+		query = "SELECT u FROM UserAccount u WHERE u.username LIKE :username")
 })
 public class UserAccount {
 	@Id

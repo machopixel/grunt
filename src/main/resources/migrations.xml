@@ -18,5 +18,44 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
+
+        <createTable tableName="user_friends">
+            <column name="account_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            <column name="friend_account_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="user_authentication">
+            <column name="account_id" type="bigint">
+                <constraints  primaryKey="true" nullable="false" />
+            </column>
+            <column name="token" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="mac_address" type="varchar(32)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="challenge">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints  primaryKey="true" nullable="false" />
+            </column>
+            <column name="creator" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="participant_a" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="participant_b" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="gameid" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
     </changeSet>
 </databaseChangeLog>
