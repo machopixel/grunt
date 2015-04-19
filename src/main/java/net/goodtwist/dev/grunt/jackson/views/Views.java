@@ -1,9 +1,12 @@
 package net.goodtwist.dev.grunt.jackson.views;
 
 public class Views {
-    public static class UserProfile {
+    public static class PublicView {
     }
  
-    public static class ServerProfile extends UserProfile {
+    public static class PrivateView extends PublicView {
+    }
+ 
+    public static class ServerView extends PublicView {
     }
 }

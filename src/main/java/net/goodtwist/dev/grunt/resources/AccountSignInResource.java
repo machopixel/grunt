@@ -17,40 +17,46 @@ import java.util.List;
 
 import net.goodtwist.dev.grunt.core.ServerResponse;
 import net.goodtwist.dev.grunt.core.UserAccount;
-import net.goodtwist.dev.grunt.db.UserAccountDAO;
+import net.goodtwist.dev.grunt.db.IUserAccountDAO;
 import net.goodtwist.dev.grunt.jackson.views.Views;
 
-@Path("/api/sign-up")
+@Path("/api/account/sign-in")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class SignUpResource {
+public class AccountSignInResource {
 
-	private final UserAccountDAO userAccountDAO;
+	private final IUserAccountDAO userAccountDAO;
 
-	public SignUpResource(UserAccountDAO userAccountDAO) {
+	public AccountSignInResource(IUserAccountDAO userAccountDAO) {
 		this.userAccountDAO = userAccountDAO;
 	}
 
 	@POST
 	@UnitOfWork
-	@Timed(name = "get-requests")
-	@JsonView(Views.UserProfile.class)
-	public ServerResponse signup(@Valid UserAccount userAccount) {
+	@Timed(name = "sign-in")
+	@JsonView(Views.PrivateView.class)
+	public ServerResponse signin(@Valid UserAccount userAccount) {
 		ServerResponse response = new ServerResponse();
 		boolean success = false;
 		List<String> errorMessages = new LinkedList<String>();
 		
-		List<UserAccount> users = userAccountDAO.findByUsername(userAccount.getUsername());
+		List<UserAccount> users = this.userAccountDAO.findByEqualUsername(userAccount.getUsername());
 		
-		if (users.size() == 0){
-			UserAccount user = userAccount;
-			user = userAccountDAO.create(user);
-			success = true;
-
-			response.setContent(user);
-		}else{
+		if (users.size() == 1){
+			UserAccount user = users.get(0);
+			if (user.getPassword().equals(userAccount.getPassword())){
+				response.setContent(user);
+				success = true;
+			}else{
+				success = false;
+				errorMessages.add("1");
+			}
+		}else if (users.size() == 0){
 			success = false;
-			errorMessages.add("1");
+			errorMessages.add("2");
+		} else{
+			success = false;
+			errorMessages.add("3");
 		}
 		
 		response.setSuccess(success);

@@ -17,22 +17,25 @@ import net.goodtwist.dev.grunt.jackson.views.Views;
 @Table(name = "user_account")
 @NamedQueries({
 	@NamedQuery(
-		name = "net.goodtwist.dev.grunt.core.UserAccount.findByUsername",
-		query = "SELECT u FROM UserAccount u WHERE u.username = :username")
+		name = "net.goodtwist.dev.grunt.core.UserAccount.findByEqualUsername",
+		query = "SELECT u FROM UserAccount u WHERE u.username = :username"),
+	@NamedQuery(
+		name = "net.goodtwist.dev.grunt.core.UserAccount.findByLikeUsername",
+		query = "SELECT u FROM UserAccount u WHERE u.username LIKE :username LIMIT :limit")
 })
 public class UserAccount {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonView(Views.UserProfile.class)
+	@JsonView(Views.PublicView.class)
 	private long id;
 	@Column(name = "username", nullable = false)
-	@JsonView(Views.UserProfile.class)
+	@JsonView(Views.PublicView.class)
 	private String username;
 	@Column(name = "password", nullable = false)
-	@JsonView(Views.ServerProfile.class)
+	@JsonView(Views.ServerView.class)
 	private String password;
 	@Column(name = "email", nullable = false)
-	@JsonView(Views.UserProfile.class)
+	@JsonView(Views.PrivateView.class)
 	private String email;
 	
 	public long getId() {
