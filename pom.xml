@@ -167,6 +167,9 @@
               <configuration>
                   <changeLogFile>src/main/resources/migrations.xml</changeLogFile>
                   <driver>org.h2.Driver</driver>
+                  <url>jdbc:h2:file:./target/db/db_test</url>
+                  <username>user_test</username>
+                  <password>pass_test</password>
               </configuration>
               <dependencies>
                   <dependency>
