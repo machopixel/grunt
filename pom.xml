@@ -155,30 +155,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-            <plugin>
-                <groupId>org.eluder.coveralls</groupId>
-                <artifactId>coveralls-maven-plugin</artifactId>
-                <version>3.0.1</version>
-            </plugin>
-            <plugin>
-              <groupId>org.liquibase</groupId>
-              <artifactId>liquibase-maven-plugin</artifactId>
-              <version>3.1.0</version>
-              <configuration>
-                  <changeLogFile>src/main/resources/migrations.xml</changeLogFile>
-                  <driver>org.h2.Driver</driver>
-                  <url>jdbc:h2:file:./target/db/db_test</url>
-                  <username>user_test</username>
-                  <password>pass_test</password>
-              </configuration>
-              <dependencies>
-                  <dependency>
-                      <groupId>com.h2database</groupId>
-                      <artifactId>h2</artifactId>
-                      <version>1.3.175</version>
-                  </dependency>
-              </dependencies>
-          </plugin>
         </plugins>
     </build>
 </project>
