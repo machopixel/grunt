@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -56,7 +57,7 @@ public class AccountSignInResourceTest {
 
     @Test
     public void ValidSignInTest() throws JsonProcessingException {
-        when(dao.findByEqualUsername("user_test")).thenReturn(userAccountList);
+        when(dao.findByEqualUsername(any(String.class))).thenReturn(userAccountList);
         final Response response = resources.client().target("/api/account/sign-in")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(userAccount, MediaType.APPLICATION_JSON_TYPE));

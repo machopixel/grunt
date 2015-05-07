@@ -56,7 +56,7 @@ public class AccountSignUpResourceTest {
 
     @Test
     public void ValidSignUpTest() throws JsonProcessingException {
-        when(dao.findByEqualUsername("user_test")).thenReturn(userAccountList);
+        when(dao.findByEqualUsername(any(String.class))).thenReturn(userAccountList);
         when(dao.create(any(UserAccount.class))).thenReturn(userAccount);
         final Response response = resources.client().target("/api/account/sign-up")
                 .request(MediaType.APPLICATION_JSON_TYPE)

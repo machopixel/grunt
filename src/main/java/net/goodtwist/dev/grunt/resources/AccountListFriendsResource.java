@@ -6,7 +6,6 @@ import com.google.common.base.Optional;
 
 import io.dropwizard.hibernate.UnitOfWork;
 
-import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
@@ -17,7 +16,6 @@ import javax.ws.rs.core.MediaType;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.goodtwist.dev.grunt.core.Challenge;
 import net.goodtwist.dev.grunt.core.ServerResponse;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.core.UserAuthentication;

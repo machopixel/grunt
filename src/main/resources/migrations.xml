@@ -26,6 +26,9 @@
             <column name="friend_account_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
+            <column name="is_online" type="boolean">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
 
         <createTable tableName="user_authentication">
