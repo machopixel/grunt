@@ -48,6 +48,7 @@ public class AccountSignInResourceTest {
         userAccountList.add(userAccount);
     }
 
+    
     @After
     public void tearDown() {
         reset(dao);
