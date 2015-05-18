@@ -1,15 +1,15 @@
 package net.goodtwist.dev.grunt.core;
 
+import java.util.LinkedList;
 import java.util.List;
 
-public class ServerResponse {
+public class ResponseEntity {
 	
 	private Object content;
-	private boolean success;
 	private List<String> errorMessages;
 
-	public ServerResponse(){
-		
+	public ResponseEntity(){
+		errorMessages = new LinkedList<String>();
 	}
 
 	public Object getContent() {
@@ -20,19 +20,15 @@ public class ServerResponse {
 		this.content = content;
 	}
 
-	public boolean getSuccess() {
-		return success;
-	}
-
-	public void setSuccess(boolean success) {
-		this.success = success;
-	}
-
 	public List<String> getErrorMessages() {
 		return errorMessages;
 	}
 
 	public void setErrorMessages(List<String> errorMessages) {
 		this.errorMessages = errorMessages;
+	}
+	
+	public void addErrorMessage(String newError){
+		this.errorMessages.add(newError);
 	}
 }

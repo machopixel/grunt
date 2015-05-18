@@ -11,11 +11,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import net.goodtwist.dev.grunt.core.ServerResponse;
+import net.goodtwist.dev.grunt.core.ResponseEntity;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
 import net.goodtwist.dev.grunt.jackson.views.Views;
@@ -35,34 +35,27 @@ public class AccountSignInResource {
 	@UnitOfWork
 	@Timed(name = "sign-in")
 	@JsonView(Views.PrivateView.class)
-	public ServerResponse signin(@Valid UserAccount userAccount) {
-		ServerResponse response = new ServerResponse();
-		boolean success = false;
-		List<String> errorMessages = new LinkedList<String>();
+	public Response signin(@Valid UserAccount userAccount) {
+		ResponseEntity responseEntity = new ResponseEntity();
+		int	status = 400;
 		
 		List<UserAccount> users = this.userAccountDAO.findByEqualUsername(userAccount.getUsername());
 		
 		if (users.size() == 1){
 			UserAccount user = users.get(0);
 			if (user.getPassword().equals(userAccount.getPassword())){
-				response.setContent(user);
-				success = true;
+				responseEntity.setContent(user);
+				status = 200;
 			}else{
-				success = false;
-				errorMessages.add("1");
+				responseEntity.addErrorMessage("1");
 			}
 		}else if (users.size() == 0){
-			success = false;
-			errorMessages.add("2");
+			responseEntity.addErrorMessage("2");
 		} else{
-			success = false;
-			errorMessages.add("3");
+			responseEntity.addErrorMessage("3");
 		}
 		
-		response.setSuccess(success);
-		response.setErrorMessages(errorMessages);
-		
-		return response;
+		return Response.status(status).entity(responseEntity).build();
 	}
 
 }

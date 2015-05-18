@@ -11,11 +11,11 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
-import java.util.LinkedList;
 import java.util.List;
 
-import net.goodtwist.dev.grunt.core.ServerResponse;
+import net.goodtwist.dev.grunt.core.ResponseEntity;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
 import net.goodtwist.dev.grunt.jackson.views.Views;
@@ -35,27 +35,22 @@ public class AccountSignUpResource {
 	@UnitOfWork
 	@Timed(name = "sign-up")
 	@JsonView(Views.PrivateView.class)
-	public ServerResponse signup(@Valid UserAccount userAccount) {
-		ServerResponse response = new ServerResponse();
-		boolean success = false;
-		List<String> errorMessages = new LinkedList<String>();
+	public Response signup(@Valid UserAccount userAccount) {
+		ResponseEntity responseEntity = new ResponseEntity();
+		int status = 400;
 		
 		List<UserAccount> users = this.userAccountDAO.findByEqualUsername(userAccount.getUsername());
 		
 		if (users.size() == 0){
 			UserAccount newUser = this.userAccountDAO.create(userAccount);
-			success = true;
-
-			response.setContent(newUser);
+			status = 200;
+			responseEntity.setContent(newUser);
 		}else{
-			success = false;
-			errorMessages.add("1");
+			status = 401;
+			responseEntity.addErrorMessage("1");
 		}
 		
-		response.setSuccess(success);
-		response.setErrorMessages(errorMessages);
-		
-		return response;
+		return Response.status(status).entity(responseEntity).build();
 	}
 
 }

@@ -12,11 +12,12 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import java.util.LinkedList;
 import java.util.List;
 
-import net.goodtwist.dev.grunt.core.ServerResponse;
+import net.goodtwist.dev.grunt.core.ResponseEntity;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.core.UserAuthentication;
 import net.goodtwist.dev.grunt.core.UserFriends;
@@ -44,10 +45,9 @@ public class AccountListFriendsResource {
 	@UnitOfWork
 	@Timed(name = "account-friends-list")
 	@JsonView(Views.PublicView.class)
-	public ServerResponse listFriends(@HeaderParam("token") String token) {
-		ServerResponse response = new ServerResponse();
-		boolean success = false;
-		List<String> errorMessages = new LinkedList<String>();
+	public Response listFriends(@HeaderParam("token") String token) {
+		ResponseEntity responseEntity = new ResponseEntity();
+		int status = 400;
 		
 		List<UserAuthentication> authList = this.userAuthenticationDAO.findByToken(token);
 		
@@ -63,18 +63,13 @@ public class AccountListFriendsResource {
 					friendsAccounts.add(userAccount.get());
 				}
 			}
-				
-			response.setContent(friendsAccounts);
-			success = true;
+			status = 200;
+			responseEntity.setContent(friendsAccounts);
 		} else{
-			success = false;
-			errorMessages.add("3");
+			responseEntity.addErrorMessage("1");
 		}
 		
-		response.setSuccess(success);
-		response.setErrorMessages(errorMessages);
-		
-		return response;
+		return Response.status(status).entity(responseEntity).build();
 	}
 
 }

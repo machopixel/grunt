@@ -13,12 +13,10 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-
-import java.util.LinkedList;
-import java.util.List;
+import javax.ws.rs.core.Response;
 
 import net.goodtwist.dev.grunt.core.Challenge;
-import net.goodtwist.dev.grunt.core.ServerResponse;
+import net.goodtwist.dev.grunt.core.ResponseEntity;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IChallengeDAO;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
@@ -41,10 +39,9 @@ public class ChallengeCreateResource {
 	@UnitOfWork
 	@Timed(name = "create-challenge")
 	@JsonView(Views.PrivateView.class)
-	public ServerResponse createChallenge(@HeaderParam("token") String token, @Valid Challenge challenge) {
-		ServerResponse response = new ServerResponse();
-		boolean success = false;
-		List<String> errorMessages = new LinkedList<String>();
+	public Response createChallenge(@HeaderParam("token") String token, @Valid Challenge challenge) {
+		ResponseEntity responseEntity = new ResponseEntity();
+		int status = 400;
 		
 		Optional<UserAccount> creator = this.userAccountDAO.findById(challenge.getCreatorId());
 		Optional<UserAccount> participantA = this.userAccountDAO.findById(challenge.getParticipantAId());
@@ -52,20 +49,17 @@ public class ChallengeCreateResource {
 		
 		if (creator.isPresent()){
 			if (participantA.isPresent() && participantB.isPresent()){
-				this.challengeDAO.create(challenge);
+				Challenge newChallenge = this.challengeDAO.create(challenge);
+				responseEntity.setContent(newChallenge);
+				status = 200;
 			}else{
-				success = false;
-				errorMessages.add("2");
+				responseEntity.addErrorMessage("2");
 			}
 		}else{
-			success = false;
-			errorMessages.add("1");
+			responseEntity.addErrorMessage("1");
 		}
 		
-		response.setSuccess(success);
-		response.setErrorMessages(errorMessages);
-		
-		return response;
+		return Response.status(status).entity(responseEntity).build();
 	}
 
 }
