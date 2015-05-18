@@ -46,7 +46,6 @@ public class AccountSignUpResourceTest {
         userAccount.setEmail("email_test");
         
         userAccountList = new LinkedList<UserAccount>();
-        userAccountList.add(userAccount);
     }
 
     @After
