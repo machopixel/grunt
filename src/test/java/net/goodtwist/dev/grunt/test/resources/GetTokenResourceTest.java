@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.dropwizard.testing.junit.ResourceTestRule;
 import net.goodtwist.dev.grunt.core.UserAccount;
+import net.goodtwist.dev.grunt.core.UserAuthentication;
 import net.goodtwist.dev.grunt.db.h2.UserAccountDAOH2;
-import net.goodtwist.dev.grunt.resources.AccountSignInResource;
+import net.goodtwist.dev.grunt.db.h2.UserAuthenticationDAOH2;
+import net.goodtwist.dev.grunt.resources.GetTokenResource;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,22 +30,27 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class AccountSignInResourceTest {
-    private static final UserAccountDAOH2 dao = mock(UserAccountDAOH2.class);
+public class GetTokenResourceTest {
+	private static final UserAccountDAOH2 userAccountDAO = mock(UserAccountDAOH2.class);
+	private static final UserAuthenticationDAOH2 userAuthenticationDAO = mock(UserAuthenticationDAOH2.class);
     @ClassRule
     public static final ResourceTestRule resources = ResourceTestRule.builder()
-            .addResource(new AccountSignInResource(dao))
+            .addResource(new GetTokenResource(userAccountDAO, userAuthenticationDAO))
             .build();
     
     private UserAccount userAccount;
     private List<UserAccount> userAccountList;
+    private UserAuthentication userAuthentication;
 
     @Before
     public void setUp() {
+        userAuthentication = new UserAuthentication();
+    	
     	userAccount = new UserAccount();
         userAccount.setUsername("user_test");
         userAccount.setPassword("pass_test");
         userAccount.setEmail("email_test");
+        userAccount.addUserAuthentications(userAuthentication);
         
         userAccountList = new LinkedList<UserAccount>();
         userAccountList.add(userAccount);
@@ -52,13 +59,14 @@ public class AccountSignInResourceTest {
     
     @After
     public void tearDown() {
-        reset(dao);
+        reset(userAccountDAO);
+        reset(userAuthenticationDAO);
     }
 
     @Test
     public void ValidSignInTest() throws JsonProcessingException {
-        when(dao.findByEqualUsername(any(String.class))).thenReturn(userAccountList);
-        final Response response = resources.client().target("/api/account/sign-in")
+        when(userAccountDAO.findByEqualUsername(any(String.class))).thenReturn(userAccountList);
+        final Response response = resources.client().target("/api/security/get-token")
                 .request(MediaType.APPLICATION_JSON_TYPE)
                 .post(Entity.entity(userAccount, MediaType.APPLICATION_JSON_TYPE));
 

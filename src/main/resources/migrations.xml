@@ -21,25 +21,28 @@
 
         <createTable tableName="user_friends">
             <column name="account_id" type="bigint">
-                <constraints nullable="false" />
+                <constraints nullable="false" foreignKeyName="fk_user_friends__user_account_id" references="user_account(id)"/>
             </column>
             <column name="friend_account_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
-            <column name="is_online" type="boolean">
-                <constraints nullable="true"/>
+                <constraints nullable="false" foreignKeyName="fk_user_friends__friend_account_id" references="user_account(id)"/>
             </column>
         </createTable>
 
         <createTable tableName="user_authentication">
-            <column name="account_id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints  primaryKey="true" nullable="false" />
             </column>
-            <column name="token" type="varchar(32)">
+            <column name="account_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_user_authentication__user_account_id" references="user_account(id)"/>
+            </column>
+            <column name="token" type="varchar(36)">
                 <constraints nullable="false"/>
             </column>
             <column name="mac_address" type="varchar(32)">
                 <constraints nullable="true"/>
+            </column>
+            <column name="expired" type="BOOLEAN">
+                <constraints nullable="false"/>
             </column>
         </createTable>
 

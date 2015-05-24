@@ -35,7 +35,7 @@ public class AccountSignUpResource {
 	@UnitOfWork
 	@Timed(name = "sign-up")
 	@JsonView(Views.PrivateView.class)
-	public Response signup(@Valid UserAccount userAccount) {
+	public Response signup(UserAccount userAccount) {
 		ResponseEntity responseEntity = new ResponseEntity();
 		int status = 400;
 		

@@ -14,26 +14,31 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import java.util.List;
+import java.util.UUID;
 
 import net.goodtwist.dev.grunt.core.ResponseEntity;
 import net.goodtwist.dev.grunt.core.UserAccount;
+import net.goodtwist.dev.grunt.core.UserAuthentication;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
+import net.goodtwist.dev.grunt.db.IUserAuthenticationDAO;
 import net.goodtwist.dev.grunt.jackson.views.Views;
 
-@Path("/api/account/sign-in")
+@Path("/api/security/get-token")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
-public class AccountSignInResource {
+public class GetTokenResource {
 
 	private final IUserAccountDAO userAccountDAO;
+	private final IUserAuthenticationDAO userAuthenticationDAO;
 
-	public AccountSignInResource(IUserAccountDAO userAccountDAO) {
+	public GetTokenResource(IUserAccountDAO userAccountDAO, IUserAuthenticationDAO userAuthenticationDAO) {
 		this.userAccountDAO = userAccountDAO;
+		this.userAuthenticationDAO = userAuthenticationDAO;
 	}
 
 	@POST
 	@UnitOfWork
-	@Timed(name = "sign-in")
+	@Timed(name = "get-token")
 	@JsonView(Views.PrivateView.class)
 	public Response signin(@Valid UserAccount userAccount) {
 		ResponseEntity responseEntity = new ResponseEntity();
@@ -41,10 +46,23 @@ public class AccountSignInResource {
 		
 		List<UserAccount> users = this.userAccountDAO.findByEqualUsername(userAccount.getUsername());
 		
+		
 		if (users.size() == 1){
 			UserAccount user = users.get(0);
+			
 			if (user.getPassword().equals(userAccount.getPassword())){
-				responseEntity.setContent(user);
+				this.userAuthenticationDAO.disableByAccountId(user.getId());
+				
+				UUID uuid = UUID.randomUUID();
+				
+				UserAuthentication userAuthentication = new UserAuthentication();
+				userAuthentication.setAccount(user);
+				userAuthentication.setToken(uuid.toString());
+				userAuthentication.setExpired(false);
+				this.userAuthenticationDAO.create(userAuthentication);
+				user.addUserAuthentications(userAuthentication);
+				
+				responseEntity.setContent(userAuthentication);
 				status = 200;
 			}else{
 				responseEntity.addErrorMessage("1");

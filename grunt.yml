@@ -11,7 +11,7 @@ database:
   password: sa
 
   # the JDBC URL
-  url: jdbc:h2:./target/grunt
+  url: jdbc:h2:D:/Dev/GitHub/grunt/target/grunt
 
 # use the simple server factory if you only want to run on a single port
 #server:
@@ -25,9 +25,9 @@ server:
 #  hardNofileLimit: 1000
   applicationConnectors:
     - type: http
-      port: 8080
+      port: 5050
     - type: https
-      port: 8443
+      port: 5060
       keyStorePath: example.keystore
       keyStorePassword: example
       validateCerts: false
@@ -39,9 +39,9 @@ server:
 #      validateCerts: false
   adminConnectors:
     - type: http
-      port: 8081
+      port: 5051
     - type: https
-      port: 8444
+      port: 5061
       keyStorePath: example.keystore
       keyStorePassword: example
       validateCerts: false

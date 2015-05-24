@@ -2,9 +2,6 @@ package net.goodtwist.dev.grunt.db.h2;
 
 import net.goodtwist.dev.grunt.core.UserAuthentication;
 import net.goodtwist.dev.grunt.db.IUserAuthenticationDAO;
-
-import com.google.common.base.Optional;
-
 import io.dropwizard.hibernate.AbstractDAO;
 
 import java.util.List;
@@ -27,6 +24,17 @@ public class UserAuthenticationDAOH2 extends AbstractDAO<UserAuthentication> imp
 	public List<UserAuthentication> findByAccountId(long id){
 		return list(namedQuery("net.goodtwist.dev.grunt.core.UserAuthentication.findByAccountId")
 				.setParameter("accountid", id));
+	}
+	
+	@Override
+	public UserAuthentication create(UserAuthentication userAuthentication) {
+		return persist(userAuthentication);
+	}
+
+	@Override
+	public void disableByAccountId(long id) {
+		namedQuery("net.goodtwist.dev.grunt.core.UserAuthentication.disableByAccountId")
+		.setParameter("accountid", id);
 	}
 
 }

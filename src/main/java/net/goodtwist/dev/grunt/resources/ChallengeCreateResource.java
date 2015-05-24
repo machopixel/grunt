@@ -39,7 +39,7 @@ public class ChallengeCreateResource {
 	@UnitOfWork
 	@Timed(name = "create-challenge")
 	@JsonView(Views.PrivateView.class)
-	public Response createChallenge(@HeaderParam("token") String token, @Valid Challenge challenge) {
+	public Response createChallenge(@HeaderParam("Authorization") String token, @Valid Challenge challenge) {
 		ResponseEntity responseEntity = new ResponseEntity();
 		int status = 400;
 		
