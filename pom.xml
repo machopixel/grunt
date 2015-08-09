@@ -9,6 +9,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dropwizard.version>0.8.0</dropwizard.version>
+        <datastax.version>2.1.0</datastax.version>
     </properties>
     <dependencies>
         <dependency>
@@ -16,21 +17,6 @@
             <artifactId>dropwizard-core</artifactId>
             <version>${dropwizard.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-db</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.dropwizard</groupId>
-            <artifactId>dropwizard-hibernate</artifactId>
-            <version>${dropwizard.version}</version>
-        </dependency>
-        <dependency>
-			<groupId>io.dropwizard</groupId>
-			<artifactId>dropwizard-migrations</artifactId>
-			<version>${dropwizard.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>io.dropwizard</groupId>
 			<artifactId>dropwizard-configuration</artifactId>
@@ -42,11 +28,21 @@
             <version>${dropwizard.version}</version>
             <scope>test</scope>
         </dependency>
-		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>1.4.186</version>
-		</dependency>
+        <dependency>
+            <groupId>com.datastax.cassandra</groupId>
+            <artifactId>cassandra-driver-core</artifactId>
+            <version>${datastax.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

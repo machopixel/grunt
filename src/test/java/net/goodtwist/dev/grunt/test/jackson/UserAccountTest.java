@@ -14,7 +14,7 @@ public class UserAccountTest {
     private static final ObjectMapper MAPPER = Jackson.newObjectMapper();
 
     @Test
-    public void serializesToJSON() throws Exception {
+    public void serializeToJSON() throws Exception {
         UserAccount userAccount = new UserAccount();
         userAccount.setUsername("user_test");
         userAccount.setPassword("pass_test");
@@ -26,7 +26,7 @@ public class UserAccountTest {
     }
     
     @Test
-    public void deserializesFromJSON() throws Exception {
+    public void deserializeFromJSON() throws Exception {
         UserAccount userAccount = new UserAccount();
         userAccount.setUsername("user_test");
         userAccount.setPassword("pass_test");

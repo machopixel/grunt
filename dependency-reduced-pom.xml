@@ -152,6 +152,7 @@
   </dependencies>
   <properties>
     <dropwizard.version>0.8.0</dropwizard.version>
+    <datastax.version>2.2.0-rc2</datastax.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 </project>

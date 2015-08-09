@@ -8,8 +8,7 @@ import net.goodtwist.dev.grunt.core.Challenge;
 
 public interface IChallengeDAO{
 
-	public Optional<Challenge> findById(Long id);
-	public List<Challenge> findByCreator(Long id);
-	public List<Challenge> findByParticipant(Long id);
-	public Challenge create(Challenge challenge);
+	Optional<Challenge> findById(Long id);
+	List<Challenge> findByAnyField(String creator, String participantA, String participantB, String characterA, String characterB);
+	Optional<Challenge> create(Challenge challenge);
 }
