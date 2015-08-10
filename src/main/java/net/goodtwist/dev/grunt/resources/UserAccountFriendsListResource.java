@@ -38,8 +38,7 @@ public class UserAccountFriendsListResource {
 		Optional<UserAccount> userAccount = this.userAccountDAO.findByUsername(username);
 
 		if (userAccount.isPresent()){
-			List<UserAccount> userAccountFriendsList = this.userAccountDAO.findFriendsByUsername(username, 0, -1);
-			responseEntity.setContent(userAccountFriendsList);
+			responseEntity.setContent(userAccount.get().getFriends());
 			status = Status.OK;
 		} else{
 			status = Status.NOT_FOUND;

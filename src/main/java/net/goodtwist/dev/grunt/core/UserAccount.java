@@ -14,8 +14,21 @@ public class UserAccount {
 	private String password;
 	@JsonView(Views.PrivateView.class)
 	private String email;
-    @JsonView(Views.PrivateView.class)
-    private Set<UserAccount> friends;
+	@JsonView(Views.PrivateView.class)
+	private Set<UserAccount> friends;
+	@JsonView(Views.PublicView.class)
+	private boolean onlineStatus;
+
+	public boolean getOnlineStatus()
+	{
+		return onlineStatus;
+	}
+
+	public void setOnlineStatus(boolean onlineStatus)
+	{
+		this.onlineStatus = onlineStatus;
+	}
+
 
 	public Set<UserAccount> getFriends() {
 		if (this.friends == null){
