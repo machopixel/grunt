@@ -13,6 +13,7 @@ import net.goodtwist.dev.grunt.core.ResponseEntity;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
 import net.goodtwist.dev.grunt.jackson.views.Views;
+import net.goodtwist.dev.grunt.resources.filters.RegistrationRequired;
 import net.goodtwist.dev.grunt.services.UserAccountService;
 
 @Path("/api/v1/account/")
@@ -51,6 +52,7 @@ public class UserAccountResource {
 	}
 
 	@GET
+    @RegistrationRequired
 	@Path("{username}")
 	@Timed(name = "retrieve-user-account")
 	@JsonView(Views.PrivateView.class)
@@ -64,6 +66,28 @@ public class UserAccountResource {
 			responseEntity.setContent(userAccount);
 			status = Status.ACCEPTED;
 		}else{
+			status = Status.NOT_FOUND;
+		}
+
+		return Response.status(status).entity(responseEntity).build();
+	}
+
+
+	@GET
+    @RegistrationRequired
+	@Path("{username}/friends")
+	@Timed(name = "retrieve-friends-list")
+	@JsonView(Views.PublicView.class)
+	public Response getFriendsList(@PathParam("username") String username) {
+		ResponseEntity responseEntity = new ResponseEntity();
+		Status status;
+
+		Optional<UserAccount> userAccount = this.userAccountDAO.findByUsername(username);
+
+		if (userAccount.isPresent()){
+			responseEntity.setContent(userAccount.get().getFriends());
+			status = Status.OK;
+		} else{
 			status = Status.NOT_FOUND;
 		}
 

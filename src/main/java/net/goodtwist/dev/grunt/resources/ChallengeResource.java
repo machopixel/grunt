@@ -15,6 +15,7 @@ import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IChallengeDAO;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
 import net.goodtwist.dev.grunt.jackson.views.Views;
+import net.goodtwist.dev.grunt.resources.filters.RegistrationRequired;
 
 import java.util.List;
 
@@ -32,15 +33,28 @@ public class ChallengeResource {
 	}
 
 	@POST
+	@RegistrationRequired
 	@Timed(name = "create-challenge")
 	@JsonView(Views.PrivateView.class)
 	public Response createChallenge(Challenge challenge) {
 		ResponseEntity responseEntity = new ResponseEntity();
 		Status status;
-		
+
 		Optional<UserAccount> creator = this.userAccountDAO.findByUsername(challenge.getCreator());
-		Optional<UserAccount> participantA = this.userAccountDAO.findByUsername(challenge.getParticipantA());
-		Optional<UserAccount> participantB = this.userAccountDAO.findByUsername(challenge.getParticipantB());
+
+		Optional<UserAccount> participantA;
+		if (challenge.getCreator().equals(challenge.getParticipantA())){
+			participantA = creator;
+		}else{
+			participantA = this.userAccountDAO.findByUsername(challenge.getParticipantA());
+		}
+
+		Optional<UserAccount> participantB;
+		if (challenge.getCreator().equals(challenge.getParticipantB())){
+			participantB = creator;
+		}else{
+			participantB = this.userAccountDAO.findByUsername(challenge.getParticipantB());
+		}
 		
 		if (creator.isPresent()){
 			if (participantA.isPresent() && participantB.isPresent()){
@@ -62,6 +76,7 @@ public class ChallengeResource {
 	}
 
 	@GET
+	@RegistrationRequired
 	@Timed(name = "retrieve-challenge")
 	@JsonView(Views.PrivateView.class)
 	public Response retrieveChallenge(@QueryParam("creator") String creator,
@@ -72,7 +87,7 @@ public class ChallengeResource {
 		ResponseEntity responseEntity = new ResponseEntity();
 		Status status;
 
-		List<Challenge> challenges = this.challengeDAO.findByAnyField(creator, participantA, participantB, characterA, characterB);
+		List<Challenge> challenges = this.challengeDAO.findByAnyParticipant(creator, participantA, participantB);
 
 		responseEntity.setContent(challenges);
 		status = Status.ACCEPTED;
@@ -81,6 +96,7 @@ public class ChallengeResource {
 	}
 
 	@GET
+	@RegistrationRequired
 	@Path("{id}")
 	@Timed(name = "retrieve-challenge")
 	@JsonView(Views.PrivateView.class)

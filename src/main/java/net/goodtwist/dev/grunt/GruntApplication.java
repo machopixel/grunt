@@ -8,7 +8,6 @@ import net.goodtwist.dev.grunt.db.IChallengeDAO;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
 import net.goodtwist.dev.grunt.db.cassandra.UserAccountDAOCassandra;
 import net.goodtwist.dev.grunt.db.cassandra.ChallengeDAOCassandra;
-import net.goodtwist.dev.grunt.resources.UserAccountFriendsListResource;
 import net.goodtwist.dev.grunt.resources.UserAccountResource;
 import net.goodtwist.dev.grunt.resources.ChallengeResource;
 
@@ -32,10 +31,9 @@ public class GruntApplication extends Application<GruntConfiguration> {
 		CassandraManager cassandraManager = new CassandraManager();
 
 		final IUserAccountDAO userAccountDAO = new UserAccountDAOCassandra(cassandraManager);
-		final IChallengeDAO challengeDAO = new ChallengeDAOCassandra();
+		final IChallengeDAO challengeDAO = new ChallengeDAOCassandra(cassandraManager);
 
 		environment.jersey().register(new UserAccountResource(userAccountDAO));
-		environment.jersey().register(new UserAccountFriendsListResource(userAccountDAO));
 		environment.jersey().register(new ChallengeResource(userAccountDAO, challengeDAO));
 	}
 }

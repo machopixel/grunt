@@ -25,7 +25,14 @@ public class CassandraManager {
         return this.cluster;
     }
 
-    public ResultSet executeQuery(BuiltStatement query){
-       return session.execute(query);
+    public ResultSet executeQuery(BuiltStatement query) throws Exception{
+        ResultSet result = null;
+        try{
+            result = session.execute(query);
+        }catch (Exception e){
+
+        }
+
+        return result;
     }
 }

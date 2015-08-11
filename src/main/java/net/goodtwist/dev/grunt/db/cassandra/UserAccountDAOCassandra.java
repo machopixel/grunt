@@ -8,16 +8,11 @@ import com.google.common.base.Optional;
 import net.goodtwist.dev.grunt.cassandra.CassandraManager;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
-import org.eclipse.jetty.server.Authentication;
-
 import static com.datastax.driver.core.querybuilder.QueryBuilder.in;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Diego on 8/6/2015.
@@ -32,6 +27,7 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
 
     @Override
     public Optional<UserAccount> findByUsername(String username) {
+        Optional result = Optional.absent();
         try{
             BuiltStatement query = select().all()
                                            .from("goodtwist", "useraccount")
@@ -42,17 +38,33 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
 
             if (resultList.size() == 1){
                 Row row = resultList.get(0);
-                UserAccount userAccount = new UserAccount();
-                userAccount.setUsername(row.getString("username"));
-                userAccount.setEmail(row.getString("email"));
-                userAccount.setPassword(row.getString("password"));
-                userAccount.setFriends(getFriends(row.getSet("friends", String.class)));
-                return Optional.of(userAccount);
+                result = Optional.of(handleRow(row, false));
             }
         }catch(Exception e){
             System.out.println(e);
         }
-        return Optional.absent();
+        return result;
+    }
+
+    @Override
+    public Map<String, UserAccount> findMultipleByUsernames(String[] usernames)
+    {
+        Map<String, UserAccount> result = new HashMap<String, UserAccount>();
+
+        try {
+            BuiltStatement query  = select().all()
+                                            .from("goodtwist", "useraccount")
+                                            .where(in("username", usernames));
+            ResultSet resultSet = cassandraManager.executeQuery(query);
+            List<Row> resultList = resultSet.all();
+
+            for (Row row:resultList){
+                result.put(row.getString("username"), this.handleRow(row, false));
+            }
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        return result;
     }
 
     @Override
@@ -63,15 +75,11 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
             BuiltStatement query  = select().all()
                                             .from("goodtwist", "useraccount")
                                             .where(in("username", friends.toArray()));
-
             ResultSet resultSet = cassandraManager.executeQuery(query);
             List<Row> resultList = resultSet.all();
 
             for (Row row:resultList){
-                UserAccount userAccount = new UserAccount();
-                userAccount.setUsername(row.getString("username"));
-                userAccount.setOnlineStatus(row.getBool("username"));
-                result.add(userAccount);
+                result.add(this.handleRow(row, true));
             }
         }catch(Exception e){
             System.out.println(e);
@@ -85,14 +93,25 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
             BuiltStatement query = QueryBuilder.insertInto("goodtwist", "useraccount")
                                                .values(this.getFieldsAsArrayForUserAccountTable(),
                                                        this.getValuesAsArrayForUserAccountTable(userAccount));
-
             ResultSet resultSet = cassandraManager.executeQuery(query);
+            return this.findByUsername(userAccount.getUsername());
         }catch(Exception e){
-            return Optional.absent();
         }
-        return this.findByUsername(userAccount.getUsername());
+        return Optional.absent();
     }
 
+    public UserAccount handleRow(Row row, boolean isPartial){
+        UserAccount userAccount = new UserAccount();
+        userAccount.setUsername(row.getString("username"));
+        userAccount.setOnlineStatus(row.getBool("onlinestatus"));
+        if (!isPartial)
+        {
+            userAccount.setEmail(row.getString("email"));
+            userAccount.setPassword(row.getString("password"));
+            userAccount.setFriends(getFriends(row.getSet("friends", String.class)));
+        }
+        return userAccount;
+    }
 
     public Object[] getValuesAsArrayForUserAccountTable(UserAccount userAccount){
         Object[] result = new Object[5];
