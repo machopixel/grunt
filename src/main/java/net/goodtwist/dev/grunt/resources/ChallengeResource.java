@@ -61,7 +61,7 @@ public class ChallengeResource {
 				Optional<Challenge> newChallenge = this.challengeDAO.create(challenge);
 				if (newChallenge.isPresent()){
 					responseEntity.setContent(newChallenge);
-					status = Status.ACCEPTED;
+					status = Status.OK;
 				}else{
 					status = Response.Status.NOT_ACCEPTABLE;
 				}
@@ -90,7 +90,7 @@ public class ChallengeResource {
 		List<Challenge> challenges = this.challengeDAO.findByAnyParticipant(creator, participantA, participantB);
 
 		responseEntity.setContent(challenges);
-		status = Status.ACCEPTED;
+		status = Status.OK;
 
 		return Response.status(status).entity(responseEntity).build();
 	}
@@ -108,7 +108,7 @@ public class ChallengeResource {
 
 		if (challenge.isPresent()){
 			responseEntity.setContent(challenge);
-			status = Status.ACCEPTED;
+			status = Status.OK;
 		}else{
 			status = Response.Status.NOT_ACCEPTABLE;
 		}

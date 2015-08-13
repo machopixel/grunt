@@ -8,6 +8,7 @@ import net.goodtwist.dev.grunt.db.IChallengeDAO;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
 import net.goodtwist.dev.grunt.db.cassandra.UserAccountDAOCassandra;
 import net.goodtwist.dev.grunt.db.cassandra.ChallengeDAOCassandra;
+import net.goodtwist.dev.grunt.resources.SecurityResource;
 import net.goodtwist.dev.grunt.resources.UserAccountResource;
 import net.goodtwist.dev.grunt.resources.ChallengeResource;
 
@@ -35,5 +36,6 @@ public class GruntApplication extends Application<GruntConfiguration> {
 
 		environment.jersey().register(new UserAccountResource(userAccountDAO));
 		environment.jersey().register(new ChallengeResource(userAccountDAO, challengeDAO));
+		environment.jersey().register(new SecurityResource(userAccountDAO));
 	}
 }

@@ -40,7 +40,7 @@ public class UserAccountResource {
 			Optional<UserAccount> newUserAccount = this.userAccountDAO.create(userAccount);
 			if (newUserAccount.isPresent()){
 				responseEntity.setContent(newUserAccount);
-				status = Status.ACCEPTED;
+				status = Status.OK;
 			}else{
 				status = Response.Status.NOT_ACCEPTABLE;
 			}
@@ -64,7 +64,7 @@ public class UserAccountResource {
 
 		if (userAccount.isPresent()){
 			responseEntity.setContent(userAccount);
-			status = Status.ACCEPTED;
+			status = Status.OK;
 		}else{
 			status = Status.NOT_FOUND;
 		}

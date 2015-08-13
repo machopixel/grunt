@@ -4,9 +4,10 @@ import javax.annotation.Priority;
 import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
-import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Cookie;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
+import java.util.Map;
 
 /**
  * Created by Diego on 8/12/2015.
@@ -17,9 +18,9 @@ import javax.ws.rs.ext.Provider;
 public class RegistrationRequiredFilter  implements ContainerRequestFilter{
     @Override
     public void filter(ContainerRequestContext containerRequestContext) {
-        MultivaluedMap<String, String> headers = containerRequestContext.getHeaders();
+        Map<String, Cookie> cookies = containerRequestContext.getCookies();
 
-        if (headers.get("token") != null){
+        if (cookies.get("security") != null){
 
         }else{
             containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
