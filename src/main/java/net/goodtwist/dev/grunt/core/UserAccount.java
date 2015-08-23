@@ -2,6 +2,7 @@ package net.goodtwist.dev.grunt.core;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import net.goodtwist.dev.grunt.jackson.views.Views;
 
@@ -18,14 +19,43 @@ public class UserAccount {
 	private Set<UserAccount> friends;
 	@JsonView(Views.PublicView.class)
 	private boolean onlineStatus;
+	@JsonView(Views.PublicView.class)
+	private int membershipStatus;
+	@JsonView(Views.ServerView.class)
+	private Set<UUID> confirmationKey;
 
-	public boolean getOnlineStatus()
-	{
+
+	public Set<UUID> getConfirmationKey() {
+		if (this.confirmationKey == null){
+			this.confirmationKey = new HashSet<UUID>();
+		}
+		return confirmationKey;
+	}
+
+	public void setConfirmationKey(Set<UUID> confirmationKey) {
+		this.confirmationKey = confirmationKey;
+	}
+
+	public void addConfirmationKey(UUID confirmationKey) {
+		if (this.confirmationKey == null){
+			this.confirmationKey = new HashSet<UUID>();
+		}
+		this.confirmationKey.add(confirmationKey);
+	}
+
+	public int getMembershipStatus(){
+		return this.membershipStatus;
+	}
+
+	public void setMembershipStatus(int newMembershipStatus){
+		this.membershipStatus = newMembershipStatus;
+	}
+
+	public boolean getOnlineStatus(){
 		return onlineStatus;
 	}
 
-	public void setOnlineStatus(boolean onlineStatus)
-	{
+	public void setOnlineStatus(boolean onlineStatus){
 		this.onlineStatus = onlineStatus;
 	}
 

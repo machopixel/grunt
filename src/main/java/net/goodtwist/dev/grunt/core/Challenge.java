@@ -4,9 +4,11 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import net.goodtwist.dev.grunt.jackson.views.Views;
 
+import java.util.UUID;
+
 public class Challenge {
     @JsonView(Views.PublicView.class)
-    private long id;
+    private UUID id;
     @JsonView(Views.PublicView.class)
     private String creator;
     @JsonView(Views.PublicView.class)
@@ -17,6 +19,8 @@ public class Challenge {
     private String characterA;
     @JsonView(Views.PublicView.class)
     private String characterB;
+    @JsonView(Views.PublicView.class)
+    private long gameId;
 
     public String getCharacterA() {
         return characterA;
@@ -34,15 +38,12 @@ public class Challenge {
         this.characterB = characterB;
     }
 
-    @JsonView(Views.PublicView.class)
 
-    private long gameId;
-
-    public long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

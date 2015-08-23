@@ -17,7 +17,7 @@ public class CassandraManager {
     private Session session;
 
     public CassandraManager() {
-        this.cluster = Cluster.builder().addContactPoint("192.168.1.4").withPort(9042).build();
+        this.cluster = Cluster.builder().addContactPoint("192.168.1.3").withPort(9042).build();
         this.session = cluster.connect("GoodTwist");
     }
 

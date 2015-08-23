@@ -8,6 +8,9 @@ import com.google.common.base.Optional;
 import net.goodtwist.dev.grunt.cassandra.CassandraManager;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
+
+import javax.inject.Inject;
+
 import static com.datastax.driver.core.querybuilder.QueryBuilder.in;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
@@ -19,10 +22,9 @@ import java.util.*;
  */
 public class UserAccountDAOCassandra implements IUserAccountDAO{
 
-    private CassandraManager cassandraManager;
+    @Inject private CassandraManager cassandraManager;
 
-    public UserAccountDAOCassandra(CassandraManager newCassandraManager){
-        this.cassandraManager = newCassandraManager;
+    public UserAccountDAOCassandra(){
     }
 
     @Override
@@ -109,15 +111,16 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
             userAccount.setEmail(row.getString("email"));
             userAccount.setPassword(row.getString("password"));
             userAccount.setFriends(getFriends(row.getSet("friends", String.class)));
+            userAccount.setMembershipStatus(row.getInt("membershipstatus"));
         }
         return userAccount;
     }
 
     public Object[] getValuesAsArrayForUserAccountTable(UserAccount userAccount){
-        Object[] result = new Object[5];
-        result[0] = userAccount.getUsername();
+        Object[] result = new Object[7];
+        result[0] = userAccount.getUsername().toLowerCase();
         result[1] = userAccount.getPassword();
-        result[2] = userAccount.getEmail();
+        result[2] = userAccount.getEmail().toLowerCase();
 
         Set<UserAccount> friends = userAccount.getFriends();
         Set<String> friendsString = new HashSet<String>();
@@ -127,17 +130,21 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
 
         result[3] = friendsString;
         result[4] = userAccount.getOnlineStatus();
+        result[5] = userAccount.getMembershipStatus();
+        result[6] = userAccount.getConfirmationKey();
 
         return result;
     }
 
     public String[] getFieldsAsArrayForUserAccountTable(){
-        String[] result = new String[5];
+        String[] result = new String[7];
         result[0] = "username";
         result[1] = "password";
         result[2] = "email";
         result[3] = "friends";
         result[4] = "onlinestatus";
+        result[5] = "membershipstatus";
+        result[6] = "confirmationkey";
 
         return result;
     }

@@ -4,17 +4,14 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.querybuilder.BuiltStatement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.google.common.base.Optional;
 import net.goodtwist.dev.grunt.cassandra.CassandraManager;
 import net.goodtwist.dev.grunt.core.Challenge;
-import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IChallengeDAO;
-import net.goodtwist.dev.grunt.jackson.views.Views;
 
-import java.util.HashSet;
+import javax.inject.Inject;
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
@@ -24,14 +21,13 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
  */
 public class ChallengeDAOCassandra implements IChallengeDAO{
 
-    private CassandraManager cassandraManager;
+    @Inject private CassandraManager cassandraManager;
 
-    public ChallengeDAOCassandra(CassandraManager newCassandraManager) {
-        this.cassandraManager = newCassandraManager;
+    public ChallengeDAOCassandra() {
     }
 
     @Override
-    public Optional<Challenge> findById (Long id){
+    public Optional<Challenge> findById (UUID id){
         Optional result = Optional.absent();
         try{
             BuiltStatement query = select().all()
@@ -70,7 +66,7 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
 
     public Challenge handleRow(Row row){
         Challenge challenge = new Challenge();
-        challenge.setId(row.getLong("id"));
+        challenge.setId(row.getUUID("id"));
         challenge.setCreator(row.getString("creator"));
         challenge.setParticipantA(row.getString("participanta"));
         challenge.setParticipantB(row.getString("participantb"));

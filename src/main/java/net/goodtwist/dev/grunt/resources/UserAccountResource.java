@@ -3,6 +3,7 @@ package net.goodtwist.dev.grunt.resources;
 import com.codahale.metrics.annotation.Timed;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -21,10 +22,9 @@ import net.goodtwist.dev.grunt.services.UserAccountService;
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserAccountResource {
 
-	private final IUserAccountDAO userAccountDAO;
+	@Inject private IUserAccountDAO userAccountDAO;
 
-	public UserAccountResource(IUserAccountDAO userAccountDAO) {
-		this.userAccountDAO = userAccountDAO;
+	public UserAccountResource() {
 	}
 
 	@POST
@@ -35,11 +35,13 @@ public class UserAccountResource {
 		Status status;
 
 		UserAccountService userAccountService = new UserAccountService(userAccountDAO);
-		
-		if (userAccountService.isNewUserAccountValid(userAccount)){
-			Optional<UserAccount> newUserAccount = this.userAccountDAO.create(userAccount);
-			if (newUserAccount.isPresent()){
-				responseEntity.setContent(newUserAccount);
+		UserAccount newUserAccount = userAccountService.createNewUserAccount(userAccount);
+		responseEntity.setErrorMessages(userAccountService.isUserAccountValid(newUserAccount));
+
+		if (responseEntity.getErrorMessages().size() < 1){
+			Optional<UserAccount> finalUserAccount = this.userAccountDAO.create(newUserAccount);
+			if (finalUserAccount.isPresent()){
+				responseEntity.setContent(finalUserAccount);
 				status = Status.OK;
 			}else{
 				status = Response.Status.NOT_ACCEPTABLE;

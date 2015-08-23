@@ -6,6 +6,7 @@ import com.google.common.io.BaseEncoding;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
 
+import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
@@ -18,10 +19,9 @@ import javax.ws.rs.core.Response;
 @Path("/api/v1/security/")
 public class SecurityResource {
 
-    private final IUserAccountDAO userAccountDAO;
+    @Inject private IUserAccountDAO userAccountDAO;
 
-    public SecurityResource(IUserAccountDAO userAccountDAO) {
-        this.userAccountDAO = userAccountDAO;
+    public SecurityResource() {
     }
 
     @GET
@@ -48,7 +48,7 @@ public class SecurityResource {
             if (userAccount.get().getPassword().equals(loginCredentials[1])){
                 status = Response.Status.OK;
 
-                NewCookie cookie = new NewCookie("Security", "token", "/", null,
+                NewCookie cookie = new NewCookie("Security", loginCredentials[0], "/", null,
                                                  NewCookie.DEFAULT_VERSION, null, NewCookie.DEFAULT_MAX_AGE, null, false, false);
                 return Response.status(status).cookie(cookie).build();
             }

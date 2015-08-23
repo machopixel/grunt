@@ -11,6 +11,9 @@ import net.goodtwist.dev.grunt.db.cassandra.ChallengeDAOCassandra;
 import net.goodtwist.dev.grunt.resources.SecurityResource;
 import net.goodtwist.dev.grunt.resources.UserAccountResource;
 import net.goodtwist.dev.grunt.resources.ChallengeResource;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
+
+import javax.inject.Singleton;
 
 public class GruntApplication extends Application<GruntConfiguration> {
 
@@ -29,13 +32,17 @@ public class GruntApplication extends Application<GruntConfiguration> {
 
 	@Override
 	public void run(GruntConfiguration configuration, Environment environment) {
-		CassandraManager cassandraManager = new CassandraManager();
+		environment.jersey().register(new AbstractBinder() {
+			@Override
+			protected void configure() {
+				bind(CassandraManager.class).to(CassandraManager.class).in(Singleton.class);
+				bind(UserAccountDAOCassandra.class).to(IUserAccountDAO.class).in(Singleton.class);
+				bind(ChallengeDAOCassandra.class).to(IChallengeDAO.class).in(Singleton.class);
+			}
+		});
 
-		final IUserAccountDAO userAccountDAO = new UserAccountDAOCassandra(cassandraManager);
-		final IChallengeDAO challengeDAO = new ChallengeDAOCassandra(cassandraManager);
-
-		environment.jersey().register(new UserAccountResource(userAccountDAO));
-		environment.jersey().register(new ChallengeResource(userAccountDAO, challengeDAO));
-		environment.jersey().register(new SecurityResource(userAccountDAO));
+		environment.jersey().register(new UserAccountResource());
+		environment.jersey().register(new ChallengeResource());
+		environment.jersey().register(new SecurityResource());
 	}
 }
