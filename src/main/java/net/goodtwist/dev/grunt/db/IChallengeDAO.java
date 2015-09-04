@@ -2,7 +2,7 @@ package net.goodtwist.dev.grunt.db;
 
 import com.google.common.base.Optional;
 
-import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import net.goodtwist.dev.grunt.core.Challenge;
@@ -10,6 +10,6 @@ import net.goodtwist.dev.grunt.core.Challenge;
 public interface IChallengeDAO{
 
 	Optional<Challenge> findById(UUID id);
-	List<Challenge> findByAnyParticipant(String creator, String participantA, String participantB);
+	Map<UUID, Challenge> findByCreator(String creator);
 	Optional<Challenge> create(Challenge challenge);
 }

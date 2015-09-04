@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import net.goodtwist.dev.grunt.jackson.views.Views;
 
+import java.util.Date;
 import java.util.UUID;
 
 public class Challenge {
@@ -20,7 +21,27 @@ public class Challenge {
     @JsonView(Views.PublicView.class)
     private String characterB;
     @JsonView(Views.PublicView.class)
-    private long gameId;
+    private long game;
+    @JsonView(Views.PublicView.class)
+    private float cash;
+    @JsonView(Views.PublicView.class)
+    private int endTime;
+
+    public float getCash() {
+        return cash;
+    }
+
+    public void setCash(float cash) {
+        this.cash = cash;
+    }
+
+    public int getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(int endTime) {
+        this.endTime = endTime;
+    }
 
     public String getCharacterA() {
         return characterA;
@@ -37,7 +58,6 @@ public class Challenge {
     public void setCharacterB(String characterB) {
         this.characterB = characterB;
     }
-
 
     public UUID getId() {
         return id;
@@ -71,11 +91,11 @@ public class Challenge {
         this.participantB = participantB;
     }
 
-    public long getGameId() {
-        return gameId;
+    public long getGame() {
+        return game;
     }
 
-    public void setGameId(long gameId) {
-        this.gameId = gameId;
+    public void setGame(long game) {
+        this.game = game;
     }
 }

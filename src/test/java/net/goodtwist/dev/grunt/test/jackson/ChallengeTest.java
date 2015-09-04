@@ -16,7 +16,7 @@ public class ChallengeTest {
     @Test
     public void serializeToJSON() throws Exception {
     	Challenge challenge = new Challenge();
-    	challenge.setGameId(1001);
+    	challenge.setGame(1001);
     	challenge.setCreator("Diego");
         challenge.setParticipantA("machopixel");
         challenge.setParticipantB("superalan");
@@ -29,7 +29,7 @@ public class ChallengeTest {
     @Test
     public void deserializeFromJSON() throws Exception {
     	Challenge challenge = new Challenge();
-    	challenge.setGameId(1001);
+    	challenge.setGame(1001);
         challenge.setCreator("Diego");
         challenge.setParticipantA("machopixel");
         challenge.setParticipantB("superalan");

@@ -10,8 +10,7 @@ import net.goodtwist.dev.grunt.core.Challenge;
 import net.goodtwist.dev.grunt.db.IChallengeDAO;
 
 import javax.inject.Inject;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
@@ -47,8 +46,22 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
     }
 
     @Override
-    public List<Challenge> findByAnyParticipant (String creator, String participantA, String participantB){
-        return null;
+    public Map<UUID, Challenge> findByCreator (String creator){
+        Map<UUID, Challenge> result = new HashMap<UUID, Challenge>();
+
+        try{
+            BuiltStatement query = QueryBuilder.select().all()
+                                               .from("goodtwist", "challenge")
+                                               .where(eq("creator", creator));
+            ResultSet resultSet = cassandraManager.executeQuery(query);
+            List<Row> resultList = resultSet.all();
+
+            for (Row row:resultList){
+                result.put(row.getUUID("id"), this.handleRow(row));
+            }
+        }catch(Exception e){
+        }
+        return result;
     }
 
     @Override
@@ -60,6 +73,7 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
             ResultSet resultSet = cassandraManager.executeQuery(query);
             return this.findById(challenge.getId());
         }catch(Exception e){
+            e.printStackTrace();
         }
         return Optional.absent();
     }
@@ -72,28 +86,36 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
         challenge.setParticipantB(row.getString("participantb"));
         challenge.setCharacterA(row.getString("charactera"));
         challenge.setCharacterB(row.getString("characterb"));
+        challenge.setCash(row.getFloat("cash"));
+        challenge.setEndTime(row.getInt("endtime"));
         return challenge;
     }
 
     public Object[] getValuesAsArrayForChallengeTable(Challenge challenge){
-        Object[] result = new Object[6];
+        Object[] result = new Object[9];
         result[0] = challenge.getId();
         result[1] = challenge.getCreator();
         result[2] = challenge.getParticipantA();
         result[3] = challenge.getParticipantB();
         result[4] = challenge.getCharacterA();
         result[5] = challenge.getCharacterB();
+        result[6] = challenge.getCash();
+        result[7] = challenge.getEndTime();
+        result[8] = challenge.getGame();
         return result;
     }
 
     public String[] getFieldsAsArrayForChallengeTable(){
-        String[] result = new String[6];
+        String[] result = new String[9];
         result[0] = "id";
         result[1] = "creator";
         result[2] = "participanta";
         result[3] = "participantb";
         result[4] = "charactera";
         result[5] = "characterb";
+        result[6] = "cash";
+        result[7] = "endtime";
+        result[8] = "game";
         return result;
     }
 }

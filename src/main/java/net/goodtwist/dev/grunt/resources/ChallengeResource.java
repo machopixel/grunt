@@ -21,6 +21,7 @@ import net.goodtwist.dev.grunt.services.ChallengeService;
 import net.goodtwist.dev.grunt.services.UserAccountService;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Path("/api/v1/challenge/")
@@ -60,25 +61,21 @@ public class ChallengeResource {
             status = Response.Status.NOT_ACCEPTABLE;
         }
 
-
         return Response.status(status).entity(responseEntity).build();
     }
 
     @GET
     @RegistrationRequired
+    @Path("bycreator/{creator}")
     @Timed(name = "retrieve-challenge")
     @JsonView(Views.PrivateView.class)
-    public Response retrieveChallenge(@QueryParam("creator") String creator,
-                                      @QueryParam("participantA") String participantA,
-                                      @QueryParam("participantB") String participantB,
-                                      @QueryParam("characterA") String characterA,
-                                      @QueryParam("characterB") String characterB) {
+    public Response retrieveChallenge(@PathParam("creator") String creator) {
         ResponseEntity responseEntity = new ResponseEntity();
         Status status;
 
-        List<Challenge> challenges = this.challengeDAO.findByAnyParticipant(creator, participantA, participantB);
+        Map<UUID, Challenge> challenges = this.challengeDAO.findByCreator(creator);
 
-        responseEntity.setContent(challenges);
+        responseEntity.setContent(challenges.values().toArray());
         status = Status.OK;
 
         return Response.status(status).entity(responseEntity).build();
@@ -86,7 +83,7 @@ public class ChallengeResource {
 
     @GET
     @RegistrationRequired
-    @Path("{id}")
+    @Path("byid/{id}")
     @Timed(name = "retrieve-challenge")
     @JsonView(Views.PrivateView.class)
     public Response retrieveChallenge(@PathParam("id") UUID id) {
