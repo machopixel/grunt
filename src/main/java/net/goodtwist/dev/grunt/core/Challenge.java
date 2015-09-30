@@ -26,6 +26,26 @@ public class Challenge {
     private float cash;
     @JsonView(Views.PublicView.class)
     private int endTime;
+    @JsonView(Views.PublicView.class)
+    private int joinDateA;
+    @JsonView(Views.PublicView.class)
+    private int joinDateB;
+
+    public int getJoinDateB() {
+        return joinDateB;
+    }
+
+    public void setJoinDateB(int joinDateB) {
+        this.joinDateB = joinDateB;
+    }
+
+    public int getJoinDateA() {
+        return joinDateA;
+    }
+
+    public void setJoinDateA(int joinDateA) {
+        this.joinDateA = joinDateA;
+    }
 
     public float getCash() {
         return cash;

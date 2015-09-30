@@ -36,12 +36,12 @@ public class UserAccountService {
     }
 
     public LinkedList<String> isUserAccountValid(UserAccount userAccount){
-        LinkedList<String> result = new LinkedList<String>();
+        LinkedList<String> result = new LinkedList<>();
         if (!isUsernameValid(userAccount.getUsername())){
-            result.add("INVALID USERNAME");
+            result.add(ErrorService.INVALID_USERNAME);
         }
         if (!isPasswordValid(userAccount.getPassword())){
-            result.add("INVALID PASSWORD");
+            result.add(ErrorService.INVALID_PASSWORD);
         }
 
         return result;

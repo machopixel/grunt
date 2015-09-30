@@ -5,6 +5,7 @@ import net.goodtwist.dev.grunt.core.Challenge;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
 
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.UUID;
 
@@ -52,5 +53,25 @@ public class ChallengeService {
         }
 
         return result;
+    }
+
+    public boolean isParticipant(Challenge challenge, UserAccount userAccount){
+        if (challenge.getParticipantA().equals(userAccount.getUsername())){
+            return true;
+        }
+        if (challenge.getParticipantB().equals(userAccount.getUsername())){
+            return true;
+        }
+
+        return false;
+    }
+
+    public void accept(Challenge challenge, UserAccount userAccount){
+        if (challenge.getParticipantA().equals(userAccount.getUsername())){
+           challenge.setJoinDateA((int)(new Date().getTime() / 1000));
+        }
+        if (challenge.getParticipantB().equals(userAccount.getUsername())){
+            challenge.setJoinDateB((int)(new Date().getTime() / 1000));
+        }
     }
 }

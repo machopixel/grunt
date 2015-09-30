@@ -4,13 +4,11 @@
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../hawk/js/webapp.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Controller/DashboardActionsController.js" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Controller/DashboardController.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Controller/DashboardOpenChallengesController.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Controller/DashboardSocialController.js" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Controller/NavBar.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Controller/NavBarController.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Controller/SignInController.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Factories/ChallengeFactory.js" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Factories/CreateChallengeRequestFactory.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Factories/UserAccountFactory.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Templates/dashboard.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/../hawk/js/webapp/Templates/dashboard_actions.html" charset="UTF-8" />

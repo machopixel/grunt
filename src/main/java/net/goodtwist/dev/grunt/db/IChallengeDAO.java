@@ -12,4 +12,5 @@ public interface IChallengeDAO{
 	Optional<Challenge> findById(UUID id);
 	Map<UUID, Challenge> findByCreator(String creator);
 	Optional<Challenge> create(Challenge challenge);
+	Optional<Challenge> updateJoinDates(Challenge challenge);
 }

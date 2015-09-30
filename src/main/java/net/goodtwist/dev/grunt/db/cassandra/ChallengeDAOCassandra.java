@@ -14,6 +14,7 @@ import java.util.*;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
+import static com.datastax.driver.core.querybuilder.QueryBuilder.set;
 
 /**
  * Created by Diego on 8/9/2015.
@@ -30,7 +31,7 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
         Optional result = Optional.absent();
         try{
             BuiltStatement query = select().all()
-                                           .from("goodtwist", "challenge")
+                    .from("goodtwist", "challenge")
                                            .where(eq("id", id));
 
             ResultSet resultSet = cassandraManager.executeQuery(query);
@@ -51,8 +52,8 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
 
         try{
             BuiltStatement query = QueryBuilder.select().all()
-                                               .from("goodtwist", "challenge")
-                                               .where(eq("creator", creator));
+                    .from("goodtwist", "challenge")
+                    .where(eq("creator", creator));
             ResultSet resultSet = cassandraManager.executeQuery(query);
             List<Row> resultList = resultSet.all();
 
@@ -66,10 +67,25 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
 
     @Override
     public Optional<Challenge> create(Challenge challenge){
-        try{
+        try {
             BuiltStatement query = QueryBuilder.insertInto("goodtwist", "challenge")
-                                               .values(this.getFieldsAsArrayForChallengeTable(),
-                                                       this.getValuesAsArrayForChallengeTable(challenge));
+                    .values(this.getFieldsAsArrayForChallengeTable(),
+                            this.getValuesAsArrayForChallengeTable(challenge));
+            ResultSet resultSet = cassandraManager.executeQuery(query);
+            return this.findById(challenge.getId());
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return Optional.absent();
+    }
+
+    @Override
+    public Optional<Challenge> updateJoinDates(Challenge challenge) {
+        try{
+            BuiltStatement query = QueryBuilder.update("goodtwist", "challenge")
+                                               .with(set("joindatea",challenge.getJoinDateA()))
+                                               .and(set("joindateb",challenge.getJoinDateB()))
+                                               .where(eq("id", challenge.getId().toString()));
             ResultSet resultSet = cassandraManager.executeQuery(query);
             return this.findById(challenge.getId());
         }catch(Exception e){
@@ -88,11 +104,14 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
         challenge.setCharacterB(row.getString("characterb"));
         challenge.setCash(row.getFloat("cash"));
         challenge.setEndTime(row.getInt("endtime"));
+        challenge.setGame(row.getInt("game"));
+        challenge.setJoinDateA(row.getInt("joindatea"));
+        challenge.setJoinDateB(row.getInt("joindateb"));
         return challenge;
     }
 
     public Object[] getValuesAsArrayForChallengeTable(Challenge challenge){
-        Object[] result = new Object[9];
+        Object[] result = new Object[11];
         result[0] = challenge.getId();
         result[1] = challenge.getCreator();
         result[2] = challenge.getParticipantA();
@@ -102,11 +121,13 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
         result[6] = challenge.getCash();
         result[7] = challenge.getEndTime();
         result[8] = challenge.getGame();
+        result[9] = challenge.getJoinDateA();
+        result[10] = challenge.getJoinDateA();
         return result;
     }
 
     public String[] getFieldsAsArrayForChallengeTable(){
-        String[] result = new String[9];
+        String[] result = new String[11];
         result[0] = "id";
         result[1] = "creator";
         result[2] = "participanta";
@@ -116,6 +137,8 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
         result[6] = "cash";
         result[7] = "endtime";
         result[8] = "game";
+        result[7] = "joindatea";
+        result[8] = "joindateb";
         return result;
     }
 }

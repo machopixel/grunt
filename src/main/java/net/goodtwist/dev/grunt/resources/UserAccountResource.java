@@ -5,14 +5,17 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import com.fasterxml.jackson.jaxrs.cfg.ObjectWriterInjector;
 import com.google.common.base.Optional;
 import net.goodtwist.dev.grunt.core.ResponseEntity;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
+import net.goodtwist.dev.grunt.jackson.modifier.ViewModifier;
 import net.goodtwist.dev.grunt.jackson.views.Views;
 import net.goodtwist.dev.grunt.resources.filters.RegistrationRequired;
 import net.goodtwist.dev.grunt.services.UserAccountService;
@@ -22,7 +25,8 @@ import net.goodtwist.dev.grunt.services.UserAccountService;
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserAccountResource {
 
-	@Inject private IUserAccountDAO userAccountDAO;
+	@Inject
+	private IUserAccountDAO userAccountDAO;
 
 	public UserAccountResource() {
 	}
@@ -58,17 +62,23 @@ public class UserAccountResource {
 	@Path("{username}")
 	@Timed(name = "retrieve-user-account")
 	@JsonView(Views.PrivateView.class)
-	public Response retrieveUserAccount(@PathParam("username") String username) {
+	public Response retrieveUserAccount(@PathParam("username") String username,
+										@Context UserAccount userAccount) {
 		ResponseEntity responseEntity = new ResponseEntity();
 		Status status;
 
-		Optional<UserAccount> userAccount = this.userAccountDAO.findByUsername(username);
+		Optional<UserAccount> searchUserAccount = this.userAccountDAO.findByUsername(username);
 
-		if (userAccount.isPresent()){
-			responseEntity.setContent(userAccount);
+		if (searchUserAccount.isPresent()){
+			responseEntity.setContent(searchUserAccount);
 			status = Status.OK;
 		}else{
 			status = Status.NOT_FOUND;
+		}
+		if (userAccount.getUsername().equals("diego1")) {
+			ObjectWriterInjector.set(new ViewModifier(Views.PublicView.class));
+		}else{
+
 		}
 
 		return Response.status(status).entity(responseEntity).build();
@@ -78,7 +88,7 @@ public class UserAccountResource {
 	@GET
     @RegistrationRequired
 	@Path("{username}/friends")
-	@Timed(name = "retrieve-friends-list")
+	@Timed(name = "retrieve-user-account-friends")
 	@JsonView(Views.PublicView.class)
 	public Response getFriendsList(@PathParam("username") String username) {
 		ResponseEntity responseEntity = new ResponseEntity();

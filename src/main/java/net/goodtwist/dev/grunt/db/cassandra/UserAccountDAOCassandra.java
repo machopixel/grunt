@@ -17,9 +17,6 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
 
 import java.util.*;
 
-/**
- * Created by Diego on 8/6/2015.
- */
 public class UserAccountDAOCassandra implements IUserAccountDAO{
 
     @Inject private CassandraManager cassandraManager;
@@ -94,7 +91,8 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
         try{
             BuiltStatement query = QueryBuilder.insertInto("goodtwist", "useraccount")
                                                .values(this.getFieldsAsArrayForUserAccountTable(),
-                                                       this.getValuesAsArrayForUserAccountTable(userAccount));
+                                                       this.getValuesAsArrayForUserAccountTable(userAccount))
+                                               .ifNotExists();
             ResultSet resultSet = cassandraManager.executeQuery(query);
             return this.findByUsername(userAccount.getUsername());
         }catch(Exception e){
