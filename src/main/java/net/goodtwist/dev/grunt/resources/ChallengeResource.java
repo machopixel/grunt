@@ -6,6 +6,7 @@ import com.google.common.base.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -46,12 +47,13 @@ public class ChallengeResource {
     @RegistrationRequired
     @Timed(name = "create-challenge")
     @JsonView(Views.PrivateView.class)
-    public Response createChallenge(Challenge challenge) {
+    public Response createChallenge(Challenge challenge,
+                                    @Context UserAccount requestUserAccount) {
         ResponseEntity responseEntity = new ResponseEntity();
         Status status;
 
         ChallengeService challengeService = new ChallengeService(userAccountDAO);
-        Challenge newChallenge = challengeService.createNewChallenge(challenge);
+        Challenge newChallenge = challengeService.createNewChallenge(challenge, requestUserAccount);
         responseEntity.setErrorMessages(challengeService.isChallengeValid(newChallenge));
 
         if (responseEntity.getErrorMessages().size() < 1) {
@@ -74,7 +76,8 @@ public class ChallengeResource {
     @Path("bycreator/{creator}")
     @Timed(name = "retrieve-challenge")
     @JsonView(Views.PrivateView.class)
-    public Response retrieveChallengeByCreator(@PathParam("creator") String creator) {
+    public Response retrieveChallengeByCreator(@PathParam("creator") String creator,
+                                               @Context UserAccount requestUserAccount) {
         ResponseEntity responseEntity = new ResponseEntity();
         Status status;
 
@@ -91,7 +94,8 @@ public class ChallengeResource {
     @Path("byid/{id}")
     @Timed(name = "retrieve-challenge")
     @JsonView(Views.PrivateView.class)
-    public Response retrieveChallengeById(@PathParam("id") String id) {
+    public Response retrieveChallengeById(@PathParam("id") String id,
+                                          @Context UserAccount requestUserAccount) {
         ResponseEntity responseEntity = new ResponseEntity();
         Status status;
 
@@ -109,11 +113,11 @@ public class ChallengeResource {
 
     @GET
     @RegistrationRequired
-    @Path("byid/{id}/accept/{username}")
+    @Path("/accept/{id}")
     @Timed(name = "join-challenge")
     @JsonView(Views.PrivateView.class)
     public Response joinChallenge(@PathParam("id") String id,
-                                  @PathParam("username") String username) {
+                                  @Context UserAccount requestUserAccount) {
         ResponseEntity responseEntity = new ResponseEntity();
         Status status;
 
@@ -123,14 +127,13 @@ public class ChallengeResource {
         Optional<Challenge> challenge = this.challengeDAO.findById(UUID.fromString(id));
 
         if (challenge.isPresent()) {
-            Optional<UserAccount> userAccount = this.userAccountDAO.findByUsername(username);
 
-            if (userAccount.isPresent() && challengeService.isParticipant(challenge.get(), userAccount.get())) {
+            if (challengeService.isParticipant(challenge.get(), requestUserAccount)) {
 
-                Set<Transaction> totalTransactions = this.transactionDAO.findByUsername(username);
+                Set<Transaction> totalTransactions = this.transactionDAO.findByUsername(requestUserAccount.getUsername());
 
                 if (challenge.get().getCash() > transactionService.total(totalTransactions)){
-                    challengeService.accept(challenge.get(), userAccount.get());
+                    challengeService.accept(challenge.get(), requestUserAccount);
                     this.challengeDAO.updateJoinDates(challenge.get());
                     status = Status.OK;
 
@@ -147,44 +150,3 @@ public class ChallengeResource {
         return Response.status(status).entity(responseEntity).build();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-
-
-
-
-
-
-Lovely x Cation
-        Gyakuten Majo Saiban: Chijo na Majo ni Sabakarechau The Animation
-Honoo no Haramase Motto! Hatsuiku! Karada Sokutei 2 The Animation
-        Honoo no Haramase Paidol My Star Gakuen Z The Animation
-Gakuen no Ikenie: Nagusami Mono to Kashita Kyonyuu Furyou Shoujo
-        Buta no Gotoki Sanzoku ni Torawarete Shojo o Ubawareru Kyonyuu Himekishi & Onna Senshi: Zettai Chinpo Nanka ni Maketari Shinai!! The Animation
-        Shabura Rental: Ecchi na Onee-san to no Eroero Rental Obenkyou The Animation
-        Netoraserare
-
-        */

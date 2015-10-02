@@ -17,8 +17,9 @@ public class ChallengeService {
         this.userAccountDAO = newUserAccountDAO;
     }
 
-    public Challenge createNewChallenge(Challenge challenge){
+    public Challenge createNewChallenge(Challenge challenge, UserAccount creatorUserAccount){
         challenge.setId(UUID.randomUUID());
+        challenge.setCreator(creatorUserAccount.getUsername());
 
         return challenge;
     }
@@ -26,30 +27,23 @@ public class ChallengeService {
     public LinkedList<String> isChallengeValid(Challenge challenge){
         LinkedList<String> result = new LinkedList<String>();
 
-        Optional<UserAccount> creator = this.userAccountDAO.findByUsername(challenge.getCreator());
         Optional<UserAccount> participantA;
         Optional<UserAccount> participantB;
 
-        if (creator.isPresent() && (challenge.getCreator().equals(challenge.getParticipantA()))) {
-            participantA = creator;
-        } else {
+        if (!challenge.getCreator().equals(challenge.getParticipantA())) {
             participantA = this.userAccountDAO.findByUsername(challenge.getParticipantA());
+
+            if (!participantA.isPresent()){
+                result.add("INVALID PARTICIPANT A");
+            }
         }
 
-        if (creator.isPresent() && (challenge.getCreator().equals(challenge.getParticipantB()))){
-            participantB = creator;
-        }else{
+        if (!challenge.getCreator().equals(challenge.getParticipantB())){
             participantB = this.userAccountDAO.findByUsername(challenge.getParticipantB());
-        }
 
-        if (!creator.isPresent()){
-            result.add("INVALID CREATOR");
-        }
-        if (!participantA.isPresent()){
-            result.add("INVALID PARTICIPANT A");
-        }
-        if (!participantB.isPresent()){
-            result.add("INVALID PARTICIPANT B");
+            if (!participantB.isPresent()){
+                result.add("INVALID PARTICIPANT B");
+            }
         }
 
         return result;

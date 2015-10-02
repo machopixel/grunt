@@ -5,6 +5,7 @@ import com.datastax.driver.core.Row;
 import com.datastax.driver.core.querybuilder.BuiltStatement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import net.goodtwist.dev.grunt.cassandra.CassandraManager;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
@@ -94,7 +95,14 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
                                                        this.getValuesAsArrayForUserAccountTable(userAccount))
                                                .ifNotExists();
             ResultSet resultSet = cassandraManager.executeQuery(query);
-            return this.findByUsername(userAccount.getUsername());
+
+            List<Row> resultList = resultSet.all();
+
+            if (resultList.size() == 1) {
+                if (resultList.get(0) != null && (resultList.get(0).getBool("[applied]") == true)) {
+                    return this.findByUsername(userAccount.getUsername());
+                }
+            }
         }catch(Exception e){
         }
         return Optional.absent();
@@ -118,15 +126,18 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
         Object[] result = new Object[7];
         result[0] = userAccount.getUsername().toLowerCase();
         result[1] = userAccount.getPassword();
-        result[2] = userAccount.getEmail().toLowerCase();
+
+        if (!Strings.isNullOrEmpty(userAccount.getEmail())) {
+            result[2] = userAccount.getEmail().toLowerCase();
+        }
 
         Set<UserAccount> friends = userAccount.getFriends();
         Set<String> friendsString = new HashSet<String>();
         for(UserAccount userAccountFor:friends) {
             friendsString.add(userAccountFor.getUsername());
         }
-
         result[3] = friendsString;
+
         result[4] = userAccount.getOnlineStatus();
         result[5] = userAccount.getMembershipStatus();
         result[6] = userAccount.getConfirmationKey();

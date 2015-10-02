@@ -63,22 +63,20 @@ public class UserAccountResource {
 	@Timed(name = "retrieve-user-account")
 	@JsonView(Views.PrivateView.class)
 	public Response retrieveUserAccount(@PathParam("username") String username,
-										@Context UserAccount userAccount) {
+										@Context UserAccount requestUserAccount) {
 		ResponseEntity responseEntity = new ResponseEntity();
 		Status status;
+		Optional<UserAccount> userAccount = Optional.absent();
 
-		Optional<UserAccount> searchUserAccount = this.userAccountDAO.findByUsername(username);
+		if (!requestUserAccount.getUsername().equals(username)) {
+			userAccount = this.userAccountDAO.findByUsername(username);
+		}
 
-		if (searchUserAccount.isPresent()){
-			responseEntity.setContent(searchUserAccount);
+		if (userAccount.isPresent()){
+			responseEntity.setContent(userAccount);
 			status = Status.OK;
 		}else{
 			status = Status.NOT_FOUND;
-		}
-		if (userAccount.getUsername().equals("diego1")) {
-			ObjectWriterInjector.set(new ViewModifier(Views.PublicView.class));
-		}else{
-
 		}
 
 		return Response.status(status).entity(responseEntity).build();
@@ -90,11 +88,15 @@ public class UserAccountResource {
 	@Path("{username}/friends")
 	@Timed(name = "retrieve-user-account-friends")
 	@JsonView(Views.PublicView.class)
-	public Response getFriendsList(@PathParam("username") String username) {
+	public Response getFriendsList(@PathParam("username") String username,
+								   @Context UserAccount requestUserAccount) {
 		ResponseEntity responseEntity = new ResponseEntity();
 		Status status;
+		Optional<UserAccount> userAccount = Optional.absent();
 
-		Optional<UserAccount> userAccount = this.userAccountDAO.findByUsername(username);
+		if (!requestUserAccount.getUsername().equals(username)) {
+			userAccount = this.userAccountDAO.findByUsername(username);
+		}
 
 		if (userAccount.isPresent()){
 			responseEntity.setContent(userAccount.get().getFriends());
