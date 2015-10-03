@@ -66,10 +66,12 @@ public class UserAccountResource {
 										@Context UserAccount requestUserAccount) {
 		ResponseEntity responseEntity = new ResponseEntity();
 		Status status;
-		Optional<UserAccount> userAccount = Optional.absent();
+		Optional<UserAccount> userAccount;
 
 		if (!requestUserAccount.getUsername().equals(username)) {
 			userAccount = this.userAccountDAO.findByUsername(username);
+		}else{
+			userAccount = Optional.of(requestUserAccount);
 		}
 
 		if (userAccount.isPresent()){
@@ -96,6 +98,8 @@ public class UserAccountResource {
 
 		if (!requestUserAccount.getUsername().equals(username)) {
 			userAccount = this.userAccountDAO.findByUsername(username);
+		}else{
+			userAccount = Optional.of(requestUserAccount);
 		}
 
 		if (userAccount.isPresent()){

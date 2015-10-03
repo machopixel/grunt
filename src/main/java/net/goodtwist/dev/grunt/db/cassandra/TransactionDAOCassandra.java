@@ -73,7 +73,13 @@ public class TransactionDAOCassandra implements ITransactionDAO {
                     .values(this.getFieldsAsArrayForChallengeTable(),
                             this.getValuesAsArrayForChallengeTable(transaction));
             ResultSet resultSet = cassandraManager.executeQuery(query);
-            return this.findById(transaction.getId());
+            List<Row> resultList = resultSet.all();
+
+            if (resultList.size() == 1) {
+                if (resultList.get(0) != null && (resultList.get(0).getBool("[applied]") == true)) {
+                    return this.findById(transaction.getId());
+                }
+            }
         }catch(Exception e){
             e.printStackTrace();
         }

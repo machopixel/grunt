@@ -72,7 +72,13 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
                     .values(this.getFieldsAsArrayForChallengeTable(),
                             this.getValuesAsArrayForChallengeTable(challenge));
             ResultSet resultSet = cassandraManager.executeQuery(query);
-            return this.findById(challenge.getId());
+            List<Row> resultList = resultSet.all();
+
+            if (resultList.size() == 1) {
+                if (resultList.get(0) != null && (resultList.get(0).getBool("[applied]") == true)) {
+                    return this.findById(challenge.getId());
+                }
+            }
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -80,14 +86,39 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
     }
 
     @Override
-    public Optional<Challenge> updateJoinDates(Challenge challenge) {
+    public Optional<Challenge> updateJoinDateA(Challenge challenge) {
         try{
             BuiltStatement query = QueryBuilder.update("goodtwist", "challenge")
                                                .with(set("joindatea",challenge.getJoinDateA()))
-                                               .and(set("joindateb",challenge.getJoinDateB()))
                                                .where(eq("id", challenge.getId().toString()));
             ResultSet resultSet = cassandraManager.executeQuery(query);
-            return this.findById(challenge.getId());
+            List<Row> resultList = resultSet.all();
+
+            if (resultList.size() == 1) {
+                if (resultList.get(0) != null && (resultList.get(0).getBool("[applied]") == true)) {
+                    return this.findById(challenge.getId());
+                }
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return Optional.absent();
+    }
+
+    @Override
+    public Optional<Challenge> updateJoinDateB(Challenge challenge) {
+        try{
+            BuiltStatement query = QueryBuilder.update("goodtwist", "challenge")
+                                               .with(set("joindateb",challenge.getJoinDateB()))
+                                               .where(eq("id", challenge.getId().toString()));
+            ResultSet resultSet = cassandraManager.executeQuery(query);
+            List<Row> resultList = resultSet.all();
+
+            if (resultList.size() == 1) {
+                if (resultList.get(0) != null && (resultList.get(0).getBool("[applied]") == true)) {
+                    return this.findById(challenge.getId());
+                }
+            }
         }catch(Exception e){
             e.printStackTrace();
         }

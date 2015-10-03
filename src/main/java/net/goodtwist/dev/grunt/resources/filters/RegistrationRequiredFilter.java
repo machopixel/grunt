@@ -27,12 +27,12 @@ public class RegistrationRequiredFilter  implements ContainerRequestFilter{
     public void filter(ContainerRequestContext containerRequestContext) {
         Map<String, Cookie> cookies = containerRequestContext.getCookies();
 
-        if ((cookies.get("security") != null) && (!Strings.isNullOrEmpty(cookies.get("security").getValue()))){
+        if ((cookies.get("Security") != null) && (!Strings.isNullOrEmpty(cookies.get("Security").getValue()))){
 
-            Optional<UserAccount> userAccount = this.userAccountDAO.findByUsername(cookies.get("security").getValue());
+            Optional<UserAccount> userAccount = this.userAccountDAO.findByUsername(cookies.get("Security").getValue());
 
             if (userAccount.isPresent()){
-                containerRequestContext.setProperty("userAccount", userAccount);
+                containerRequestContext.setProperty("userAccount", userAccount.get());
             }else{
                 containerRequestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             }

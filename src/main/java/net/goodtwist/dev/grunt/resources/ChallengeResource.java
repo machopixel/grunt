@@ -132,11 +132,24 @@ public class ChallengeResource {
 
                 Set<Transaction> totalTransactions = this.transactionDAO.findByUsername(requestUserAccount.getUsername());
 
-                if (challenge.get().getCash() > transactionService.total(totalTransactions)){
-                    challengeService.accept(challenge.get(), requestUserAccount);
-                    this.challengeDAO.updateJoinDates(challenge.get());
-                    status = Status.OK;
+                Optional<Challenge> finalChallenge;
 
+                if (challenge.get().getCash() > transactionService.total(totalTransactions)){
+                    int acceptResult = challengeService.accept(challenge.get(), requestUserAccount);
+                    if ( acceptResult == 0){
+                        finalChallenge = this.challengeDAO.updateJoinDateA(challenge.get());
+                    }else if (acceptResult == 1) {
+                        finalChallenge = this.challengeDAO.updateJoinDateB(challenge.get());
+                    }else{
+                        finalChallenge = Optional.absent();
+                    }
+
+                    if (finalChallenge.isPresent()){
+                        status = Status.OK;
+                        responseEntity.setContent(finalChallenge.get());
+                    }else{
+                        status = Status.NOT_ACCEPTABLE;
+                    }
                 }else{
                     status = Status.NOT_ACCEPTABLE;
                 }

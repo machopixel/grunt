@@ -95,7 +95,6 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
                                                        this.getValuesAsArrayForUserAccountTable(userAccount))
                                                .ifNotExists();
             ResultSet resultSet = cassandraManager.executeQuery(query);
-
             List<Row> resultList = resultSet.all();
 
             if (resultList.size() == 1) {

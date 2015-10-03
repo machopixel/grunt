@@ -60,12 +60,16 @@ public class ChallengeService {
         return false;
     }
 
-    public void accept(Challenge challenge, UserAccount userAccount){
+    public int accept(Challenge challenge, UserAccount userAccount){
         if (challenge.getParticipantA().equals(userAccount.getUsername())){
            challenge.setJoinDateA((int)(new Date().getTime() / 1000));
+            return 0;
         }
         if (challenge.getParticipantB().equals(userAccount.getUsername())){
             challenge.setJoinDateB((int)(new Date().getTime() / 1000));
+            return 1;
         }
+
+        return -1;
     }
 }
