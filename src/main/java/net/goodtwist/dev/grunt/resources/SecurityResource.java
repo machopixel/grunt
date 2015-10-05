@@ -4,8 +4,10 @@ import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.io.BaseEncoding;
+import net.goodtwist.dev.grunt.core.ResponseEntity;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
+import net.goodtwist.dev.grunt.services.ErrorService;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -13,6 +15,8 @@ import javax.ws.rs.HeaderParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
+import java.util.LinkedList;
+import java.util.List;
 
 @Path("/api/v1/security/")
 public class SecurityResource {
@@ -26,6 +30,8 @@ public class SecurityResource {
     @Path("/token")
     @Timed(name = "create-user-account")
     public Response createToken(@HeaderParam("Authorization") String authorization) {
+        ResponseEntity responseEntity = new ResponseEntity();
+        List<String> errorMessages = new LinkedList<>();
         Response.Status status;
 
         String loginCredentialsDecoded = "";
@@ -50,13 +56,20 @@ public class SecurityResource {
                     return Response.status(status).cookie(cookie).build();
                 }
                 status = Response.Status.UNAUTHORIZED;
+                errorMessages.add(ErrorService.INVALID_CREDENTIALS);
             } else {
-                status = Response.Status.NOT_FOUND;
+                status = Response.Status.UNAUTHORIZED;
+                errorMessages.add(ErrorService.INVALID_CREDENTIALS);
             }
         }else{
             status = Response.Status.UNAUTHORIZED;
+            errorMessages.add(ErrorService.PLEASE_COMPLETE_FIELDS);
         }
 
-        return Response.status(status).build();
+        if (errorMessages.size() > 0) {
+            responseEntity.setErrorMessages(errorMessages);
+        }
+
+        return Response.status(status).entity(responseEntity).build();
     }
 }

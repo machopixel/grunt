@@ -31,8 +31,8 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
         Optional result = Optional.absent();
         try{
             BuiltStatement query = select().all()
-                    .from("goodtwist", "challenge")
-                                           .where(eq("id", id));
+                                            .from("goodtwist", "challenge")
+                                            .where(eq("id", id));
 
             ResultSet resultSet = cassandraManager.executeQuery(query);
             List<Row> resultList = resultSet.all();
@@ -69,8 +69,9 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
     public Optional<Challenge> create(Challenge challenge){
         try {
             BuiltStatement query = QueryBuilder.insertInto("goodtwist", "challenge")
-                    .values(this.getFieldsAsArrayForChallengeTable(),
-                            this.getValuesAsArrayForChallengeTable(challenge));
+                                                .values(this.getFieldsAsArrayForChallengeTable(),
+                                                        this.getValuesAsArrayForChallengeTable(challenge))
+                                                .ifNotExists();
             ResultSet resultSet = cassandraManager.executeQuery(query);
             List<Row> resultList = resultSet.all();
 
@@ -168,8 +169,8 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
         result[6] = "cash";
         result[7] = "endtime";
         result[8] = "game";
-        result[7] = "joindatea";
-        result[8] = "joindateb";
+        result[9] = "joindatea";
+        result[10] = "joindateb";
         return result;
     }
 }

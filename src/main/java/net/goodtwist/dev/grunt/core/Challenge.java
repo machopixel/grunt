@@ -21,7 +21,7 @@ public class Challenge {
     @JsonView(Views.PublicView.class)
     private String characterB;
     @JsonView(Views.PublicView.class)
-    private long game;
+    private int game;
     @JsonView(Views.PublicView.class)
     private float cash;
     @JsonView(Views.PublicView.class)
@@ -111,11 +111,11 @@ public class Challenge {
         this.participantB = participantB;
     }
 
-    public long getGame() {
+    public int getGame() {
         return game;
     }
 
-    public void setGame(long game) {
+    public void setGame(int game) {
         this.game = game;
     }
 }

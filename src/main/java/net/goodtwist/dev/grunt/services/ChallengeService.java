@@ -25,7 +25,7 @@ public class ChallengeService {
     }
 
     public LinkedList<String> isChallengeValid(Challenge challenge){
-        LinkedList<String> result = new LinkedList<String>();
+        LinkedList<String> result = new LinkedList<>();
 
         Optional<UserAccount> participantA;
         Optional<UserAccount> participantB;
@@ -34,7 +34,7 @@ public class ChallengeService {
             participantA = this.userAccountDAO.findByUsername(challenge.getParticipantA());
 
             if (!participantA.isPresent()){
-                result.add("INVALID PARTICIPANT A");
+                result.add(ErrorService.INVALID_PARTICIPANT_A);
             }
         }
 
@@ -42,7 +42,7 @@ public class ChallengeService {
             participantB = this.userAccountDAO.findByUsername(challenge.getParticipantB());
 
             if (!participantB.isPresent()){
-                result.add("INVALID PARTICIPANT B");
+                result.add(ErrorService.INVALID_PARTICIPANT_B);
             }
         }
 
