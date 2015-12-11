@@ -12,6 +12,7 @@ import net.goodtwist.dev.grunt.db.cassandra.TransactionDAOCassandra;
 import net.goodtwist.dev.grunt.db.cassandra.UserAccountDAOCassandra;
 import net.goodtwist.dev.grunt.db.cassandra.ChallengeDAOCassandra;
 import net.goodtwist.dev.grunt.health.TestHealthCheck;
+import net.goodtwist.dev.grunt.resources.FriendsResource;
 import net.goodtwist.dev.grunt.resources.SecurityResource;
 import net.goodtwist.dev.grunt.resources.UserAccountResource;
 import net.goodtwist.dev.grunt.resources.ChallengeResource;
@@ -52,6 +53,7 @@ public class GruntApplication extends Application<GruntConfiguration> {
 		environment.jersey().register(new UserAccountResource());
 		environment.jersey().register(new ChallengeResource());
 		environment.jersey().register(new SecurityResource());
+		environment.jersey().register(new FriendsResource());
 		environment.jersey().register(new RegistrationRequiredFilter());
 		environment.healthChecks().register("test", new TestHealthCheck());
 		environment.jersey().register(new AbstractBinder() {

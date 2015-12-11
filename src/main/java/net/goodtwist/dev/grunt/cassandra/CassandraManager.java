@@ -14,18 +14,30 @@ public class CassandraManager {
         this.session = cluster.connect("GoodTwist");
     }
 
-    public Cluster getCluster(){
+    public Cluster getCluster() {
         return this.cluster;
     }
 
-    public ResultSet executeQuery(BuiltStatement query) throws Exception{
+    public ResultSet executeQuery(BuiltStatement query) throws Exception {
         ResultSet result = null;
-        try{
+        try {
             result = session.execute(query);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return result;
+    }
+
+    public String tokeFix(String... values) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("token(");
+        for (int i = 0; i < values.length; i++) {
+            if (i > 0)
+                sb.append(", ");
+            sb.append(values[i]);
+        }
+        sb.append(")");
+        return sb.toString();
     }
 }

@@ -12,11 +12,9 @@ import net.goodtwist.dev.grunt.db.IUserAccountDAO;
 
 import javax.inject.Inject;
 
-import static com.datastax.driver.core.querybuilder.QueryBuilder.in;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
-import static com.datastax.driver.core.querybuilder.QueryBuilder.select;
-
 import java.util.*;
+
+import static com.datastax.driver.core.querybuilder.QueryBuilder.*;
 
 public class UserAccountDAOCassandra implements IUserAccountDAO{
 
@@ -47,19 +45,27 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
     }
 
     @Override
-    public Map<String, UserAccount> findMultipleByUsernames(String[] usernames)
-    {
-        Map<String, UserAccount> result = new HashMap<String, UserAccount>();
+    public List<String> searchByUsername(String username, int limit) {
+        List<String> result = new LinkedList();
+        if (limit < 1){
+            limit = 1;
+        }
+        if (limit > 10){
+            limit = 10;
+        }
 
-        try {
-            BuiltStatement query  = select().all()
-                                            .from("goodtwist", "useraccount")
-                                            .where(in("username", usernames));
+        try{
+            BuiltStatement query = select().column("username")
+                                           .from("goodtwist", "useraccount")
+                                           .where(gte(token("username"), QueryBuilder.fcall("token", username)))
+                                           .limit(limit);
+            //raw("token('" + username + "')")))
+
             ResultSet resultSet = cassandraManager.executeQuery(query);
             List<Row> resultList = resultSet.all();
 
             for (Row row:resultList){
-                result.put(row.getString("username"), this.handleRow(row, false));
+                result.add(row.getString("username"));
             }
         }catch(Exception e){
             System.out.println(e);
@@ -67,25 +73,6 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
         return result;
     }
 
-    @Override
-    public Set<UserAccount> getFriends(Set<String> friends) {
-        Set<UserAccount> result = new HashSet<UserAccount>();
-
-        try {
-            BuiltStatement query  = select().all()
-                                            .from("goodtwist", "useraccount")
-                                            .where(in("username", friends.toArray()));
-            ResultSet resultSet = cassandraManager.executeQuery(query);
-            List<Row> resultList = resultSet.all();
-
-            for (Row row:resultList){
-                result.add(this.handleRow(row, true));
-            }
-        }catch(Exception e){
-            System.out.println(e);
-        }
-        return result;
-    }
 
     @Override
     public Optional<UserAccount> create(UserAccount userAccount) {
@@ -107,6 +94,25 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
         return Optional.absent();
     }
 
+    @Override
+    public Optional<UserAccount> updateFriends(UserAccount userAccount) {
+        try{
+            BuiltStatement query = QueryBuilder.update("goodtwist", "useraccount")
+                                                .with(set("friends", userAccount.getFriends()))
+                                                .where(eq("username", userAccount.getUsername()));
+            ResultSet resultSet = cassandraManager.executeQuery(query);
+            List<Row> resultList = resultSet.all();
+
+            if (resultList.size() == 1) {
+                if (resultList.get(0) != null && (resultList.get(0).getBool("[applied]") == true)) {
+                    return this.findByUsername(userAccount.getUsername());
+                }
+            }
+        }catch(Exception e){
+        }
+        return Optional.absent();
+    }
+
     public UserAccount handleRow(Row row, boolean isPartial){
         UserAccount userAccount = new UserAccount();
         userAccount.setUsername(row.getString("username"));
@@ -115,7 +121,7 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
         {
             userAccount.setEmail(row.getString("email"));
             userAccount.setPassword(row.getString("password"));
-            userAccount.setFriends(getFriends(row.getSet("friends", String.class)));
+            userAccount.setFriends(row.getSet("friends", String.class));
             userAccount.setMembershipStatus(row.getInt("membershipstatus"));
         }
         return userAccount;
@@ -130,12 +136,7 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
             result[2] = userAccount.getEmail().toLowerCase();
         }
 
-        Set<UserAccount> friends = userAccount.getFriends();
-        Set<String> friendsString = new HashSet<String>();
-        for(UserAccount userAccountFor:friends) {
-            friendsString.add(userAccountFor.getUsername());
-        }
-        result[3] = friendsString;
+        result[3] = userAccount.getFriends();
 
         result[4] = userAccount.getOnlineStatus();
         result[5] = userAccount.getMembershipStatus();

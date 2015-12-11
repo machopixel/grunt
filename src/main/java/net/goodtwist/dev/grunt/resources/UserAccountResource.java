@@ -83,32 +83,4 @@ public class UserAccountResource {
 
 		return Response.status(status).entity(responseEntity).build();
 	}
-
-
-	@GET
-    @RegistrationRequired
-	@Path("{username}/friends")
-	@Timed(name = "retrieve-user-account-friends")
-	@JsonView(Views.PublicView.class)
-	public Response getFriendsList(@PathParam("username") String username,
-								   @Context UserAccount requestUserAccount) {
-		ResponseEntity responseEntity = new ResponseEntity();
-		Status status;
-		Optional<UserAccount> userAccount = Optional.absent();
-
-		if (!requestUserAccount.getUsername().equals(username)) {
-			userAccount = this.userAccountDAO.findByUsername(username);
-		}else{
-			userAccount = Optional.of(requestUserAccount);
-		}
-
-		if (userAccount.isPresent()){
-			responseEntity.setContent(userAccount.get().getFriends());
-			status = Status.OK;
-		} else{
-			status = Status.NOT_FOUND;
-		}
-
-		return Response.status(status).entity(responseEntity).build();
-	}
 }

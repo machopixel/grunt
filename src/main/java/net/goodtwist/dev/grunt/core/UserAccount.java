@@ -16,7 +16,7 @@ public class UserAccount {
 	@JsonView(Views.PrivateView.class)
 	private String email;
 	@JsonView(Views.PrivateView.class)
-	private Set<UserAccount> friends;
+	private Set<String> friends;
 	@JsonView(Views.PublicView.class)
 	private boolean onlineStatus;
 	@JsonView(Views.PublicView.class)
@@ -60,22 +60,30 @@ public class UserAccount {
 	}
 
 
-	public Set<UserAccount> getFriends() {
+	public Set<String> getFriends() {
 		if (this.friends == null){
-			this.friends = new HashSet<UserAccount>();
+			this.friends = new HashSet<>();
 		}
 		return friends;
 	}
 
-	public void setFriends(Set<UserAccount> friends) {
+	public void setFriends(Set<String> friends) {
 		this.friends = friends;
 	}
 
-	public void addFriend(UserAccount friendUserAccount){
+	public void addFriend(String friendUsername){
 		if (this.friends == null){
-			this.friends = new HashSet<UserAccount>();
+			this.friends = new HashSet<>();
 		}
-		friends.add(friendUserAccount);
+		friends.add(friendUsername);
+	}
+
+	public void deleteFriend(String friendUsername){
+		if (this.friends == null){
+			this.friends = new HashSet<>();
+		}
+
+		this.friends.remove(friendUsername);
 	}
 
 	public String getUsername() {

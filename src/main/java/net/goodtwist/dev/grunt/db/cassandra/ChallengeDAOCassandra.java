@@ -32,14 +32,17 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
         try{
             BuiltStatement query = select().all()
                                             .from("goodtwist", "challenge")
+                                            .allowFiltering()
                                             .where(eq("id", id));
 
             ResultSet resultSet = cassandraManager.executeQuery(query);
             List<Row> resultList = resultSet.all();
+
             if (resultList.size() == 1){
                 Row row = resultList.get(0);
                 result = Optional.of(handleRow(row));
             }
+
         }catch(Exception e){
             System.out.println(e);
         }
@@ -52,15 +55,19 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
 
         try{
             BuiltStatement query = QueryBuilder.select().all()
-                    .from("goodtwist", "challenge")
-                    .where(eq("creator", creator));
+                                               .from("goodtwist", "challenge")
+                                               .allowFiltering()
+                                               .where(eq("creator", creator));
+
             ResultSet resultSet = cassandraManager.executeQuery(query);
             List<Row> resultList = resultSet.all();
 
             for (Row row:resultList){
                 result.put(row.getUUID("id"), this.handleRow(row));
             }
+
         }catch(Exception e){
+            System.out.println(e);
         }
         return result;
     }
@@ -69,9 +76,10 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
     public Optional<Challenge> create(Challenge challenge){
         try {
             BuiltStatement query = QueryBuilder.insertInto("goodtwist", "challenge")
-                                                .values(this.getFieldsAsArrayForChallengeTable(),
-                                                        this.getValuesAsArrayForChallengeTable(challenge))
-                                                .ifNotExists();
+                                               .values(this.getFieldsAsArrayForChallengeTable(),
+                                                       this.getValuesAsArrayForChallengeTable(challenge))
+                                               .ifNotExists();
+
             ResultSet resultSet = cassandraManager.executeQuery(query);
             List<Row> resultList = resultSet.all();
 
@@ -80,6 +88,7 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
                     return this.findById(challenge.getId());
                 }
             }
+
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -100,6 +109,7 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
                     return this.findById(challenge.getId());
                 }
             }
+
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -120,6 +130,7 @@ public class ChallengeDAOCassandra implements IChallengeDAO{
                     return this.findById(challenge.getId());
                 }
             }
+
         }catch(Exception e){
             e.printStackTrace();
         }
