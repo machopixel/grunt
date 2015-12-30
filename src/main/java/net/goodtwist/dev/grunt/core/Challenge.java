@@ -25,25 +25,25 @@ public class Challenge {
     @JsonView(Views.PublicView.class)
     private float cash;
     @JsonView(Views.PublicView.class)
-    private int endTime;
+    private long endTime;
     @JsonView(Views.PublicView.class)
-    private int joinDateA;
+    private long joinDateA;
     @JsonView(Views.PublicView.class)
-    private int joinDateB;
+    private long joinDateB;
 
-    public int getJoinDateB() {
+    public long getJoinDateB() {
         return joinDateB;
     }
 
-    public void setJoinDateB(int joinDateB) {
+    public void setJoinDateB(long joinDateB) {
         this.joinDateB = joinDateB;
     }
 
-    public int getJoinDateA() {
+    public long getJoinDateA() {
         return joinDateA;
     }
 
-    public void setJoinDateA(int joinDateA) {
+    public void setJoinDateA(long joinDateA) {
         this.joinDateA = joinDateA;
     }
 
@@ -55,11 +55,11 @@ public class Challenge {
         this.cash = cash;
     }
 
-    public int getEndTime() {
+    public long getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
+    public void setEndTime(long endTime) {
         this.endTime = endTime;
     }
 

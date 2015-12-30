@@ -39,8 +39,20 @@ public class ChallengeResource {
     @Inject
     private ITransactionDAO transactionDAO;
 
+    @GET
+    @RegistrationRequired
+    @Timed(name = "get-challenges")
+    @JsonView(Views.PrivateView.class)
+    public Response getChallenges(@Context UserAccount requestUserAccount) {
+        ResponseEntity responseEntity = new ResponseEntity();
+        Status status;
 
-    public ChallengeResource() {
+        Map<UUID, Challenge> challenges = this.challengeDAO.findByCreator(requestUserAccount.getUsername());
+
+        responseEntity.setContent(challenges.values().toArray());
+        status = Status.OK;
+
+        return Response.status(status).entity(responseEntity).build();
     }
 
     @POST
@@ -73,25 +85,7 @@ public class ChallengeResource {
 
     @GET
     @RegistrationRequired
-    @Path("bycreator/{creator}")
-    @Timed(name = "retrieve-challenge")
-    @JsonView(Views.PrivateView.class)
-    public Response retrieveChallengeByCreator(@PathParam("creator") String creator,
-                                               @Context UserAccount requestUserAccount) {
-        ResponseEntity responseEntity = new ResponseEntity();
-        Status status;
-
-        Map<UUID, Challenge> challenges = this.challengeDAO.findByCreator(creator);
-
-        responseEntity.setContent(challenges.values().toArray());
-        status = Status.OK;
-
-        return Response.status(status).entity(responseEntity).build();
-    }
-
-    @GET
-    @RegistrationRequired
-    @Path("byid/{id}")
+    @Path("{id}")
     @Timed(name = "retrieve-challenge")
     @JsonView(Views.PrivateView.class)
     public Response retrieveChallengeById(@PathParam("id") String id,

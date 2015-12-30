@@ -86,21 +86,17 @@ public class FriendsResource {
         return Response.status(status).entity(responseEntity).build();
     }
 
-
-
     @GET
     @RegistrationRequired
-    @Timed(name = "delete-friend")
-    @Path("/search/{username}")
-    @JsonView(Views.PublicView.class)
-    public Response searchFriend(@PathParam("username") String username,
-                                 @Context UserAccount requestUserAccount) {
+    @Timed(name = "get-friends")
+    @JsonView(Views.PrivateView.class)
+    public Response getFriends(@Context UserAccount requestUserAccount) {
         ResponseEntity responseEntity = new ResponseEntity();
         Response.Status status;
-        List<String> listUserAccounts;
-        listUserAccounts = this.userAccountDAO.searchByUsername(username, 5);
 
-        responseEntity.setContent(listUserAccounts);
+        List<UserAccount> friends = this.userAccountDAO.getFriends(requestUserAccount.getFriends());
+
+        responseEntity.setContent(friends);
         status = Response.Status.OK;
 
         return Response.status(status).entity(responseEntity).build();

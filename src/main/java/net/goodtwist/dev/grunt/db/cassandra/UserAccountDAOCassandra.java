@@ -4,6 +4,7 @@ import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.querybuilder.BuiltStatement;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+import com.datastax.driver.core.querybuilder.Select;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import net.goodtwist.dev.grunt.cassandra.CassandraManager;
@@ -45,8 +46,9 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
     }
 
     @Override
-    public List<String> searchByUsername(String username, int limit) {
-        List<String> result = new LinkedList();
+    public List<UserAccount> searchByUsername(String username, int limit) {
+        List<UserAccount> result = new LinkedList();
+
         if (limit < 1){
             limit = 1;
         }
@@ -59,13 +61,13 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
                                            .from("goodtwist", "useraccount")
                                            .where(gte(token("username"), QueryBuilder.fcall("token", username)))
                                            .limit(limit);
-            //raw("token('" + username + "')")))
 
             ResultSet resultSet = cassandraManager.executeQuery(query);
             List<Row> resultList = resultSet.all();
 
-            for (Row row:resultList){
-                result.add(row.getString("username"));
+            if (resultList.size() == 1){
+                Row row = resultList.get(0);
+                result.add(handleRow(row, false));
             }
         }catch(Exception e){
             System.out.println(e);
@@ -113,6 +115,29 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
         return Optional.absent();
     }
 
+    @Override
+    public List<UserAccount> getFriends(List<String> friends) {
+        List<UserAccount> result = new LinkedList();
+        if (friends.size() > 0) {
+            try {
+                Select.Where query = select().column("username")
+                                             .from("goodtwist", "useraccount")
+                                             .where(in("username", friends));
+
+                ResultSet resultSet = cassandraManager.executeQuery(query);
+                List<Row> resultList = resultSet.all();
+
+                if (resultList.size() == 1) {
+                    Row row = resultList.get(0);
+                    result.add(handleRow(row, false));
+                }
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+        return result;
+    }
+
     public UserAccount handleRow(Row row, boolean isPartial){
         UserAccount userAccount = new UserAccount();
         userAccount.setUsername(row.getString("username"));
@@ -121,7 +146,7 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
         {
             userAccount.setEmail(row.getString("email"));
             userAccount.setPassword(row.getString("password"));
-            userAccount.setFriends(row.getSet("friends", String.class));
+            userAccount.setFriends(row.getList("friends", String.class));
             userAccount.setMembershipStatus(row.getInt("membershipstatus"));
         }
         return userAccount;

@@ -20,7 +20,7 @@ public abstract class Transaction {
     @JsonView(Views.ServerView.class)
     private String externalId;
     @JsonView(Views.PublicView.class)
-    private int date;
+    private long date;
     @JsonView(Views.PublicView.class)
     private float amount;
 
@@ -72,11 +72,11 @@ public abstract class Transaction {
         this.externalId = externalId;
     }
 
-    public int getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(int date) {
+    public void setDate(long date) {
         this.date = date;
     }
 }

@@ -1,8 +1,6 @@
 package net.goodtwist.dev.grunt.core;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import net.goodtwist.dev.grunt.jackson.views.Views;
 
@@ -16,7 +14,7 @@ public class UserAccount {
 	@JsonView(Views.PrivateView.class)
 	private String email;
 	@JsonView(Views.PrivateView.class)
-	private Set<String> friends;
+	private List<String> friends;
 	@JsonView(Views.PublicView.class)
 	private boolean onlineStatus;
 	@JsonView(Views.PublicView.class)
@@ -60,27 +58,27 @@ public class UserAccount {
 	}
 
 
-	public Set<String> getFriends() {
+	public List<String> getFriends() {
 		if (this.friends == null){
-			this.friends = new HashSet<>();
+			this.friends = new ArrayList<>();
 		}
 		return friends;
 	}
 
-	public void setFriends(Set<String> friends) {
+	public void setFriends(List<String> friends) {
 		this.friends = friends;
 	}
 
 	public void addFriend(String friendUsername){
 		if (this.friends == null){
-			this.friends = new HashSet<>();
+			this.friends = new ArrayList<>();
 		}
 		friends.add(friendUsername);
 	}
 
 	public void deleteFriend(String friendUsername){
 		if (this.friends == null){
-			this.friends = new HashSet<>();
+			this.friends = new ArrayList<>();
 		}
 
 		this.friends.remove(friendUsername);
