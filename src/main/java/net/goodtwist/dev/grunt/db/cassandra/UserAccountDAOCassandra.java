@@ -75,6 +75,11 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
         return result;
     }
 
+    @Override
+    public Optional<UserAccount> findByEmail(String email) {
+        return null;
+    }
+
 
     @Override
     public Optional<UserAccount> create(UserAccount userAccount) {
@@ -94,6 +99,11 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
         }catch(Exception e){
         }
         return Optional.absent();
+    }
+
+    @Override
+    public Optional<UserAccount> update(UserAccount userAccount) {
+        return null;
     }
 
     @Override

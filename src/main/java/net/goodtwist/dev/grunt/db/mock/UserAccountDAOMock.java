@@ -18,9 +18,7 @@ public class UserAccountDAOMock implements IUserAccountDAO {
         newUserAccount = new UserAccount();
 
         newUserAccount.setUsername("machopixel");
-        Set<UUID> keys = new HashSet<>();
-        keys.add(UUID.randomUUID());
-        newUserAccount.setConfirmationKey(keys);
+        newUserAccount.setConfirmationKey(UUID.randomUUID());
         newUserAccount.setEmail("dila@itu.dk");
         List<String> friends = new ArrayList<>();
         friends.add("sup3rs0pas");
@@ -44,7 +42,17 @@ public class UserAccountDAOMock implements IUserAccountDAO {
     }
 
     @Override
+    public Optional<UserAccount> findByEmail(String email) {
+        return Optional.of(newUserAccount);
+    }
+
+    @Override
     public Optional<UserAccount> create(UserAccount userAccount) {
+        return Optional.of(newUserAccount);
+    }
+
+    @Override
+    public Optional<UserAccount> update(UserAccount userAccount) {
         return Optional.of(newUserAccount);
     }
 

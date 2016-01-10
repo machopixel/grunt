@@ -20,25 +20,15 @@ public class UserAccount {
 	@JsonView(Views.PublicView.class)
 	private int membershipStatus;
 	@JsonView(Views.ServerView.class)
-	private Set<UUID> confirmationKey;
+	private UUID confirmationKey;
 
 
-	public Set<UUID> getConfirmationKey() {
-		if (this.confirmationKey == null){
-			this.confirmationKey = new HashSet<UUID>();
-		}
+	public UUID getConfirmationKey() {
 		return confirmationKey;
 	}
 
-	public void setConfirmationKey(Set<UUID> confirmationKey) {
+	public void setConfirmationKey(UUID confirmationKey) {
 		this.confirmationKey = confirmationKey;
-	}
-
-	public void addConfirmationKey(UUID confirmationKey) {
-		if (this.confirmationKey == null){
-			this.confirmationKey = new HashSet<UUID>();
-		}
-		this.confirmationKey.add(confirmationKey);
 	}
 
 	public int getMembershipStatus(){
@@ -56,7 +46,6 @@ public class UserAccount {
 	public void setOnlineStatus(boolean onlineStatus){
 		this.onlineStatus = onlineStatus;
 	}
-
 
 	public List<String> getFriends() {
 		if (this.friends == null){

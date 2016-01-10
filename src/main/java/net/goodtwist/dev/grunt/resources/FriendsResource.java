@@ -25,7 +25,6 @@ public class FriendsResource {
     @Inject
     private IUserAccountDAO userAccountDAO;
 
-
     @POST
     @RegistrationRequired
     @Timed(name = "add-friend")

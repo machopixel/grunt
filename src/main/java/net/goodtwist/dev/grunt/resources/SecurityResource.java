@@ -7,27 +7,24 @@ import com.google.common.io.BaseEncoding;
 import net.goodtwist.dev.grunt.core.ResponseEntity;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
+import net.goodtwist.dev.grunt.external.IEmailService;
 import net.goodtwist.dev.grunt.resources.filters.RegistrationRequired;
 import net.goodtwist.dev.grunt.services.ErrorService;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.NewCookie;
 import javax.ws.rs.core.Response;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 @Path("/api/v1/security/")
 public class SecurityResource {
 
     @Inject private IUserAccountDAO userAccountDAO;
-
-    public SecurityResource() {
-    }
+    @Inject private IEmailService emailService;
 
     @GET
     @Path("/token")
@@ -78,8 +75,6 @@ public class SecurityResource {
         return Response.status(status).entity(responseEntity).build();
     }
 
-
-
     @PUT
     @Path("/token")
     @RegistrationRequired
@@ -88,5 +83,29 @@ public class SecurityResource {
         NewCookie cookie = new NewCookie("Security", requestUserAccount.getUsername(), "/", null,
                 NewCookie.DEFAULT_VERSION, null, NewCookie.DEFAULT_MAX_AGE, null, false, false);
         return Response.status(Response.Status.OK).cookie(cookie).build();
+    }
+
+    @POST
+    @Path("/recover")
+    @Timed(name = "refresh-access-token")
+    public Response recoverUserAccount(@QueryParam("email") String email) {
+        ResponseEntity responseEntity = new ResponseEntity();
+        Response.Status status;
+
+        Optional<UserAccount> userAccount = this.userAccountDAO.findByEmail(email);
+
+        UUID uuid = UUID.randomUUID();
+        userAccount.get().setConfirmationKey(uuid);
+
+        userAccount = this.userAccountDAO.update(userAccount.get());
+
+        if (userAccount.isPresent()){
+            status = emailService.sendEmailRecoveryTemplate(userAccount.get().getEmail(), userAccount.get().getUsername(), userAccount.get().getConfirmationKey());
+        }else{
+            status = Response.Status.INTERNAL_SERVER_ERROR;
+        }
+
+
+        return Response.status(status).entity(responseEntity).build();
     }
 }

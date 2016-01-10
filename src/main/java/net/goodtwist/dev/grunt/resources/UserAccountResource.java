@@ -27,9 +27,6 @@ public class UserAccountResource {
 	@Inject
 	private IUserAccountDAO userAccountDAO;
 
-	public UserAccountResource() {
-	}
-
 	@POST
 	@Timed(name = "create-user-account")
 	@JsonView(Views.PrivateView.class)
@@ -57,10 +54,56 @@ public class UserAccountResource {
 	}
 
 	@GET
-    @RegistrationRequired
+	@RegistrationRequired
+	@Timed(name = "get-user-account")
+	@JsonView(Views.PrivateView.class)
+	public Response getUserAccount(@Context UserAccount requestUserAccount) {
+		ResponseEntity responseEntity = new ResponseEntity();
+		Status status;
+
+		responseEntity.setContent(requestUserAccount);
+		status = Status.OK;
+
+		return Response.status(status).entity(responseEntity).build();
+	}
+
+	@PUT
+	@RegistrationRequired
+	@Timed(name = "update-user-account")
+	@JsonView(Views.PrivateView.class)
+	public Response updateUserAccount(UserAccount userAccount,
+									@Context UserAccount requestUserAccount) {
+		ResponseEntity responseEntity = new ResponseEntity();
+		Status status;
+
+		UserAccountService userAccountService = new UserAccountService(userAccountDAO);
+
+		if (requestUserAccount.getUsername().equals(userAccount.getUsername())){
+			responseEntity.setErrorMessages(userAccountService.isUserAccountValid(userAccount));
+
+			if (responseEntity.getErrorMessages().size() < 1) {
+				Optional<UserAccount> newUserAccount = this.userAccountDAO.update(userAccount);
+
+				if (newUserAccount.isPresent()){
+					status = Status.OK;
+				}else{
+					status = Status.INTERNAL_SERVER_ERROR;
+				}
+			}else{
+				status = Response.Status.NOT_ACCEPTABLE;
+			}
+		}else{
+			status = Status.UNAUTHORIZED;
+		}
+
+		return Response.status(status).entity(responseEntity).build();
+	}
+
+	@GET
+	@RegistrationRequired
 	@Path("{username}")
 	@Timed(name = "find-user-account")
-	@JsonView(Views.PrivateView.class)
+	@JsonView(Views.PublicView.class)
 	public Response findUserAccount(@PathParam("username") String username,
 									@Context UserAccount requestUserAccount) {
 		ResponseEntity responseEntity = new ResponseEntity();

@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-@Path("/api/v1/challenge/")
+@Path("/api/v1/challenges/")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class ChallengeResource {
@@ -87,7 +87,7 @@ public class ChallengeResource {
     @RegistrationRequired
     @Path("{id}")
     @Timed(name = "retrieve-challenge")
-    @JsonView(Views.PrivateView.class)
+    @JsonView(Views.PublicView.class)
     public Response retrieveChallengeById(@PathParam("id") String id,
                                           @Context UserAccount requestUserAccount) {
         ResponseEntity responseEntity = new ResponseEntity();

@@ -8,10 +8,6 @@ public class ResponseEntity {
 	private Object content;
 	private List<String> errorMessages;
 
-	public ResponseEntity(){
-		errorMessages = new LinkedList<String>();
-	}
-
 	public Object getContent() {
 		return content;
 	}
@@ -29,6 +25,9 @@ public class ResponseEntity {
 	}
 	
 	public void addErrorMessage(String newError){
+		if (this.errorMessages == null){
+			errorMessages = new LinkedList<>();
+		}
 		this.errorMessages.add(newError);
 	}
 }

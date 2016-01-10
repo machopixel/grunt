@@ -62,7 +62,6 @@
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-xml:9.2.13.v20150730" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-continuation:9.2.13.v20150730" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard:dropwizard-servlets:0.9.1" level="project" />
-    <orderEntry type="library" name="Maven: io.dropwizard.metrics:metrics-annotation:3.1.2" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard:dropwizard-jetty:0.9.1" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard.metrics:metrics-jetty9:3.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.jetty:jetty-servlet:9.2.13.v20150730" level="project" />
@@ -92,10 +91,13 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.ow2.asm:asm-debug-all:5.0.4" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard:dropwizard-metrics-graphite:0.9.1" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard.metrics:metrics-graphite:3.1.2" level="project" />
-    <orderEntry type="library" name="Maven: com.datastax.cassandra:cassandra-driver-core:2.1.0" level="project" />
-    <orderEntry type="library" name="Maven: io.netty:netty:3.9.0.Final" level="project" />
-    <orderEntry type="library" name="Maven: com.codahale.metrics:metrics-core:3.0.2" level="project" />
-    <orderEntry type="library" name="Maven: com.codahale.metrics:metrics-annotation:3.1.2" level="project" />
+    <orderEntry type="library" name="Maven: com.datastax.cassandra:cassandra-driver-core:3.0.0-rc1" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-handler:4.0.33.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-buffer:4.0.33.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-common:4.0.33.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-transport:4.0.33.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.netty:netty-codec:4.0.33.Final" level="project" />
+    <orderEntry type="library" name="Maven: io.dropwizard.metrics:metrics-annotation:3.1.2" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard:dropwizard-logging:0.9.1" level="project" />
     <orderEntry type="library" name="Maven: io.dropwizard.metrics:metrics-logback:3.1.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:jul-to-slf4j:1.7.12" level="project" />
