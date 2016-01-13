@@ -158,6 +158,7 @@ public class UserAccountDAOCassandra implements IUserAccountDAO{
             userAccount.setPassword(row.getString("password"));
             userAccount.setFriends(row.getList("friends", String.class));
             userAccount.setMembershipStatus(row.getInt("membershipstatus"));
+            userAccount.setConfirmationKey(row.getUUID("confirmationkey"));
         }
         return userAccount;
     }
