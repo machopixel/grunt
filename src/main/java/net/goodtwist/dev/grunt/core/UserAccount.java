@@ -2,6 +2,7 @@ package net.goodtwist.dev.grunt.core;
 
 import java.util.*;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import net.goodtwist.dev.grunt.jackson.views.Views;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -16,9 +17,9 @@ public class UserAccount {
 	@JsonView(Views.PrivateView.class)
 	private List<String> friends;
 	@JsonView(Views.PublicView.class)
-	private boolean onlineStatus;
+	private boolean onlinestatus;
 	@JsonView(Views.PublicView.class)
-	private int membershipStatus;
+	private int membershipstatus;
 	@JsonView(Views.ServerView.class)
 	private UUID confirmationKey;
 
@@ -30,21 +31,21 @@ public class UserAccount {
 	public void setConfirmationKey(UUID confirmationKey) {
 		this.confirmationKey = confirmationKey;
 	}
-
+	@JsonIgnore
 	public int getMembershipStatus(){
-		return this.membershipStatus;
+		return this.membershipstatus;
 	}
-
+	@JsonIgnore
 	public void setMembershipStatus(int newMembershipStatus){
-		this.membershipStatus = newMembershipStatus;
+		this.membershipstatus = newMembershipStatus;
 	}
-
+	@JsonIgnore
 	public boolean getOnlineStatus(){
-		return onlineStatus;
+		return onlinestatus;
 	}
-
+	@JsonIgnore
 	public void setOnlineStatus(boolean onlineStatus){
-		this.onlineStatus = onlineStatus;
+		this.onlinestatus = onlineStatus;
 	}
 
 	public List<String> getFriends() {

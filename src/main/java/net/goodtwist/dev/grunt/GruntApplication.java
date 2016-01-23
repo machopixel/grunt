@@ -5,20 +5,24 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 import net.goodtwist.dev.grunt.core.UserAccount;
 import net.goodtwist.dev.grunt.db.IChallengeDAO;
-import net.goodtwist.dev.grunt.db.IGameLinkDAO;
+import net.goodtwist.dev.grunt.db.IGamelinkDAO;
 import net.goodtwist.dev.grunt.db.ITransactionDAO;
 import net.goodtwist.dev.grunt.db.IUserAccountDAO;
 import net.goodtwist.dev.grunt.cassandra.CassandraManager;
 import net.goodtwist.dev.grunt.db.cassandra.ChallengeDAOCassandra;
-import net.goodtwist.dev.grunt.db.cassandra.GameLinkDAOCassandra;
+import net.goodtwist.dev.grunt.db.cassandra.GamelinkDAOCassandra;
 import net.goodtwist.dev.grunt.db.cassandra.TransactionDAOCassandra;
 import net.goodtwist.dev.grunt.db.cassandra.UserAccountDAOCassandra;
 /*
 import net.goodtwist.dev.grunt.db.mock.ChallengeDAOMock;
-import net.goodtwist.dev.grunt.db.mock.GameLinkDAOMock;
+import net.goodtwist.dev.grunt.db.mock.GamelinkDAOMock;
 import net.goodtwist.dev.grunt.db.mock.TransactionDAOMock;
 import net.goodtwist.dev.grunt.db.mock.UserAccountDAOMock;
 */
+import net.goodtwist.dev.grunt.db.mock.ChallengeDAOMock;
+import net.goodtwist.dev.grunt.db.mock.GamelinkDAOMock;
+import net.goodtwist.dev.grunt.db.mock.TransactionDAOMock;
+import net.goodtwist.dev.grunt.db.mock.UserAccountDAOMock;
 import net.goodtwist.dev.grunt.external.IEmailService;
 import net.goodtwist.dev.grunt.external.mandrill.EmailServiceMandrill;
 import net.goodtwist.dev.grunt.health.TestHealthCheck;
@@ -54,18 +58,19 @@ public class GruntApplication extends Application<GruntConfiguration> {
 				bind(CassandraManager.class).to(CassandraManager.class).in(Singleton.class);
 
 				// Cassandra DAO
+				/*
 				bind(UserAccountDAOCassandra.class).to(IUserAccountDAO.class).in(Singleton.class);
 				bind(ChallengeDAOCassandra.class).to(IChallengeDAO.class).in(Singleton.class);
 				bind(TransactionDAOCassandra.class).to(ITransactionDAO.class).in(Singleton.class);
-				bind(GameLinkDAOCassandra.class).to(IGameLinkDAO.class).in(Singleton.class);
-
+				bind(GamelinkDAOCassandra.class).to(IGamelinkDAO.class).in(Singleton.class);
+*/
 				// MOCK DAO
-				/*
+
 				bind(UserAccountDAOMock.class).to(IUserAccountDAO.class).in(Singleton.class);
 				bind(ChallengeDAOMock.class).to(IChallengeDAO.class).in(Singleton.class);
 				bind(TransactionDAOMock.class).to(ITransactionDAO.class).in(Singleton.class);
-				bind(IGameLinkDAO.class).to(GameLinkDAOMock.class).in(Singleton.class);
-				*/
+				bind(GamelinkDAOMock.class).to(IGamelinkDAO.class).in(Singleton.class);
+
 				bind(EmailServiceMandrill.class).to(IEmailService.class).in(Singleton.class);
 			}
 		});
@@ -76,6 +81,7 @@ public class GruntApplication extends Application<GruntConfiguration> {
 		environment.jersey().register(new FriendsResource());
 		environment.jersey().register(new SearchResource());
 		environment.jersey().register(new TransactionResource());
+		environment.jersey().register(new GamelinkResource());
 		environment.jersey().register(new RegistrationRequiredFilter());
 		environment.healthChecks().register("test", new TestHealthCheck());
 		environment.jersey().register(new AbstractBinder() {

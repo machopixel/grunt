@@ -3,7 +3,7 @@ package net.goodtwist.dev.grunt.core;
 import com.fasterxml.jackson.annotation.JsonView;
 import net.goodtwist.dev.grunt.jackson.views.Views;
 
-public class GameLink {
+public class Gamelink {
     @JsonView(Views.PublicView.class)
     private String username;
     @JsonView(Views.PublicView.class)

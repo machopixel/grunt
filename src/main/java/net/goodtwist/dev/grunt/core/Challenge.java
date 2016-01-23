@@ -1,5 +1,6 @@
 package net.goodtwist.dev.grunt.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import net.goodtwist.dev.grunt.jackson.views.Views;
@@ -13,38 +14,42 @@ public class Challenge {
     @JsonView(Views.PublicView.class)
     private String creator;
     @JsonView(Views.PublicView.class)
-    private String participantA;
+    private String participanta;
     @JsonView(Views.PublicView.class)
-    private String participantB;
+    private String participantb;
     @JsonView(Views.PublicView.class)
-    private String characterA;
+    private String charactera;
     @JsonView(Views.PublicView.class)
-    private String characterB;
+    private String characterb;
     @JsonView(Views.PublicView.class)
     private int game;
     @JsonView(Views.PublicView.class)
     private float cash;
     @JsonView(Views.PublicView.class)
-    private long endTime;
+    private long endtime;
     @JsonView(Views.PublicView.class)
-    private long joinDateA;
+    private long joindatea;
     @JsonView(Views.PublicView.class)
-    private long joinDateB;
+    private long joindateb;
 
+    @JsonIgnore
     public long getJoinDateB() {
-        return joinDateB;
+        return joindateb;
     }
 
+    @JsonIgnore
     public void setJoinDateB(long joinDateB) {
-        this.joinDateB = joinDateB;
+        this.joindateb = joinDateB;
     }
 
+    @JsonIgnore
     public long getJoinDateA() {
-        return joinDateA;
+        return joindatea;
     }
 
+    @JsonIgnore
     public void setJoinDateA(long joinDateA) {
-        this.joinDateA = joinDateA;
+        this.joindatea = joinDateA;
     }
 
     public float getCash() {
@@ -55,28 +60,34 @@ public class Challenge {
         this.cash = cash;
     }
 
+    @JsonIgnore
     public long getEndTime() {
-        return endTime;
+        return endtime;
     }
 
+    @JsonIgnore
     public void setEndTime(long endTime) {
-        this.endTime = endTime;
+        this.endtime = endTime;
     }
 
+    @JsonIgnore
     public String getCharacterA() {
-        return characterA;
+        return charactera;
     }
 
+    @JsonIgnore
     public void setCharacterA(String characterA) {
-        this.characterA = characterA;
+        this.charactera = characterA;
     }
 
+    @JsonIgnore
     public String getCharacterB() {
-        return characterB;
+        return characterb;
     }
 
+    @JsonIgnore
     public void setCharacterB(String characterB) {
-        this.characterB = characterB;
+        this.characterb = characterB;
     }
 
     public UUID getId() {
@@ -95,20 +106,24 @@ public class Challenge {
         this.creator = creator;
     }
 
+    @JsonIgnore
     public String getParticipantA() {
-        return participantA;
+        return participanta;
     }
 
+    @JsonIgnore
     public void setParticipantA(String participantA) {
-        this.participantA = participantA;
+        this.participanta = participantA;
     }
 
+    @JsonIgnore
     public String getParticipantB() {
-        return participantB;
+        return participantb;
     }
 
+    @JsonIgnore
     public void setParticipantB(String participantB) {
-        this.participantB = participantB;
+        this.participantb = participantB;
     }
 
     public int getGame() {

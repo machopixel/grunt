@@ -28,6 +28,7 @@ public class TransactionDAOMock implements ITransactionDAO{
         newTransaction.setExternalId(UUID.randomUUID().toString());
         newTransaction.setMethod("PAYPAL");
         newTransaction.setUsername("machopixel");
+        newTransaction.setCurrency("GBP");
     }
 
 

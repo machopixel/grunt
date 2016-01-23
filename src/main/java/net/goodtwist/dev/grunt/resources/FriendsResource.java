@@ -95,7 +95,7 @@ public class FriendsResource {
 
         List<UserAccount> friends = this.userAccountDAO.getFriends(requestUserAccount.getFriends());
 
-        responseEntity.setContent(friends);
+        responseEntity.setContent(friends.toArray());
         status = Response.Status.OK;
 
         return Response.status(status).entity(responseEntity).build();

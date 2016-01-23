@@ -37,7 +37,7 @@ public class TransactionResource {
     @RegistrationRequired
     @Timed(name = "create-transaction")
     @JsonView(Views.PrivateView.class)
-    public Response createChallenge(Transaction transaction) {
+    public Response createTransactions(Transaction transaction) {
         ResponseEntity responseEntity = new ResponseEntity();
         Response.Status status;
 
@@ -64,7 +64,7 @@ public class TransactionResource {
     @RegistrationRequired
     @Timed(name = "retrieve-transactions")
     @JsonView(Views.PrivateView.class)
-    public Response retrieveChallengeByCreator(@Context UserAccount requestUserAccount) {
+    public Response retrieveTransactions(@Context UserAccount requestUserAccount) {
         ResponseEntity responseEntity = new ResponseEntity();
         Response.Status status;
 

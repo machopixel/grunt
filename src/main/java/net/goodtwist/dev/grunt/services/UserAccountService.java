@@ -15,7 +15,7 @@ public class UserAccountService {
     }
 
     public UserAccount createNewUserAccount(UserAccount userAccount){
-        userAccount.setMembershipStatus(5);
+        userAccount.setMembershipStatus(4);
         userAccount.setConfirmationKey(UUID.randomUUID());
 
         return userAccount;

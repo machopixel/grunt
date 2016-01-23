@@ -23,6 +23,16 @@ public abstract class Transaction {
     private long date;
     @JsonView(Views.PublicView.class)
     private float amount;
+    @JsonView(Views.PublicView.class)
+    private String currency;
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
 
     public float getAmount() {
         return amount;
