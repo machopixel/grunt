@@ -30,3 +30,10 @@ CREATE TABLE goodtwist.transaction (
         externalid text,
         date int
         );
+
+CREATE TABLE goodtwist.gamelink (
+        username text,
+        game int,
+        region text,
+        PRIMARY KEY ((username), game, region)
+        );

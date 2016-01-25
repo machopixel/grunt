@@ -1,5 +1,6 @@
 package net.goodtwist.dev.grunt.db;
 
+import com.google.common.base.Optional;
 import net.goodtwist.dev.grunt.core.Gamelink;
 
 import java.util.Set;
@@ -9,5 +10,6 @@ import java.util.Set;
  */
 public interface IGamelinkDAO {
     Set<Gamelink> getGamelinks(String username);
-    Set<Gamelink> setGamelinks(String username, Set<Gamelink> gameLink);
+    Optional<Gamelink> create(Gamelink gameLink);
+    boolean delete(Gamelink gameLink);
 }

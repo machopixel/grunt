@@ -1,5 +1,6 @@
 package net.goodtwist.dev.grunt.db.mock;
 
+import com.google.common.base.Optional;
 import net.goodtwist.dev.grunt.core.Gamelink;
 import net.goodtwist.dev.grunt.db.IGamelinkDAO;
 
@@ -29,9 +30,13 @@ public class GamelinkDAOMock implements IGamelinkDAO {
     }
 
     @Override
-    public Set<Gamelink> setGamelinks(String username, Set<Gamelink> gameLink) {
-        Set<Gamelink> result =  new HashSet<>();
-        result.add(this.gameLink);
-        return result;
+    public Optional<Gamelink> create(Gamelink gameLink) {
+        return Optional.of(this.gameLink);
     }
+
+    @Override
+    public boolean delete(Gamelink gameLink) {
+        return true;
+    }
+
 }
